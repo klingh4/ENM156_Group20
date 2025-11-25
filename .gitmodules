@@ -1,0 +1,3 @@
+[submodule "ship_simulator_zenoh"]
+	path = ship_simulator_zenoh
+	url = https://github.com/KJBlanch/ship_simulator_zenoh.git
