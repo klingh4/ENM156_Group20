@@ -1,0 +1,283 @@
+/* --- Base Styles & Dark Theme --- */
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: #121821; /* Dark blue/gray background */
+    color: #E0E0E0; /* Light text for readability */
+    overflow: hidden; /* Prevent body scroll */
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* --- Main Layout Grid --- */
+/* This grid container organizes the entire page */
+.grid-container {
+    display: grid;
+    width: 100vw;
+    height: 100vh;
+    padding: 16px;
+    gap: 16px;
+    /* Layout definition:
+        - 2 main columns on the left (map/status)
+        - 1 flexible column in the middle
+        - 1 wide column on the right (checklist)
+        - 1 bottom row for controls
+    */
+    grid-template-columns: 2fr 1.5fr 2fr;
+    grid-template-rows: 2fr 1fr 100px; /* Rows: Content, Content, Controls */
+    grid-template-areas:
+        "map tools checklist"
+        "map remarks checklist"
+        "status controls controls";
+}
+
+/* --- Panel Styling --- */
+.panel {
+    background-color: #1F2937; /* Darker panel background */
+    border-radius: 8px;
+    border: 1px solid #374151; /* Subtle border */
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Prevent content from spilling */
+}
+
+.panel-title {
+    font-size: 0.875rem; /* 14px */
+    font-weight: 500;
+    color: #9CA3AF; /* Muted title color */
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 12px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #374151;
+}
+
+/* --- Grid Area Assignments --- */
+#map-panel { 
+    grid-area: map; 
+}
+#tools-panel { 
+    grid-area: tools; 
+}
+#checklist-panel { 
+    grid-area: checklist; 
+    /* Allows checklist to scroll internally */
+    overflow-y: auto; 
+}
+#remarks-panel { 
+    grid-area: remarks; 
+}
+#status-bar { 
+    grid-area: status;
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    justify-content: center;
+}
+#control-bar { 
+    grid-area: controls;
+    background-color: #111827; /* Even darker for control bar */
+    border: 1px solid #374151;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+}
+
+/* --- Specific Panel Content --- */
+
+/* Placeholder for Map/Vehicle Picture */
+.placeholder-content {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    background-color: #111827; /* Darkest inner background */
+    color: #4B5563;
+    font-weight: 500;
+}
+
+/* Status Bar (Bottom Left) */
+#status-bar h2 {
+    margin: 0 0 8px 0;
+    color: #F9FAFB;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+#status-bar #timer {
+    font-size: 2.5rem; /* Large, clear timer */
+    font-weight: 700;
+    color: #38BDF8; /* Calming blue color */
+    line-height: 1;
+}
+#status-bar p {
+    margin: 4px 0 0 0;
+    color: #9CA3AF;
+}
+
+/* Remarks Text Editor */
+#remarks-editor {
+    flex-grow: 1;
+    width: 100%;
+    background-color: #111827;
+    border: 1px solid #374151;
+    border-radius: 4px;
+    color: #E0E0E0;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    padding: 8px;
+    resize: none; /* Disable user resizing */
+}
+
+/* Style for inline remarks in checklist */
+.remark-input {
+    width: 100%; /* Take full width of its container */
+    background-color: #111827;
+    border: 1px solid #374151;
+    border-radius: 4px;
+    color: #E0E0E0;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    padding: 4px 6px;
+    resize: none; /* Disable manual resizing */
+    overflow: hidden; /* Key for auto-grow */
+    min-height: 28px; /* Start as single-ish line */
+    display: block;
+    /*transition: all 0.1s ease-out; breaks input field resizing :( */
+}
+.remark-input::placeholder {
+    color: #4B5563;
+    font-style: italic;
+}
+.remark-input:focus {
+    /* Optional: highlight when focused */
+    border-color: #38BDF8;
+    box-shadow: 0 0 0 1px #38BDF8;
+}
+
+
+/* New Checklist Styles */
+.checklist-header {
+    display: grid;
+    /* Columns: Checkbox (40px), Item (1fr), Remark (1fr) */
+    grid-template-columns: 40px 1fr 1fr;
+    padding: 0 10px 10px 10px;
+    font-weight: 500;
+    color: #9CA3AF;
+    font-size: 0.875rem;
+    border-bottom: 1px solid #374151;
+}
+.header-item {
+    grid-column: 2 / 3;
+}
+.header-remark {
+    grid-column: 3 / 4;
+}
+
+.checklist-items {
+    /* This is the container for all the scrollable items */
+}
+
+.checklist-item {
+    display: grid;
+    /* Columns: Checkbox, Item, Remark */
+    grid-template-columns: 40px 1fr 1fr;
+    grid-template-areas: "check item remark";
+    align-items: center; /* Vertically center by default */
+    border-bottom: 1px solid #374151;
+    padding: 10px;
+    transition: all 0.1s ease-out;
+}
+.checklist-item:nth-child(even) {
+    background-color: #1d2633;
+}
+
+.item-check {
+    grid-area: check;
+}
+.item-check input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #38BDF8;
+    display: block;
+    margin: auto;
+}
+
+.item-label {
+    grid-area: item;
+    font-size: 0.875rem;
+    padding-right: 10px;
+}
+
+.item-remark {
+    grid-area: remark;
+}
+
+
+.checklist-item:focus-within {
+    grid-template-areas: 
+        "check item item"
+        "remark remark remark";
+    align-items: start; /* Align content to top */
+    padding-bottom: 16px; /* Add space for expanded text */
+}
+
+.checklist-item:focus-within .item-remark {
+    padding-top: 8px; /* Add top margin to remark field */
+}
+
+.checklist-item:focus-within .item-label {
+    font-weight: 500; /* Make label slightly bolder */
+    color: #F9FAFB;
+}
+
+
+/* Control Bar Buttons */
+.control-button {
+    padding: 12px 28px;
+    font-size: 1rem; /* 16px */
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    min-width: 180px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+#btn-configure {
+    background-color: #00436c;
+    color: #F9FAFB;
+    border: 2px solid #00436c;
+}
+#btn-configure:hover {
+    background-color: #002136;
+    border-color: #00436c;
+}
+
+#btn-ready {
+    background-color: #059669; /* Green for "Ready" */
+    color: #F9FAFB;
+    border: 2px solid #059669;
+}
+#btn-ready:hover {
+    background-color: #047857;
+    border-color: #047857;
+}
+
+#btn-abort {
+    background-color: #DC2626; /* Red for "Abort" */
+    color: #F9FAFB;
+    border: 2px solid #DC2626;
+}
+#btn-abort:hover {
+    background-color: #B91C1C;
+    border-color: #B91C1C;
+}

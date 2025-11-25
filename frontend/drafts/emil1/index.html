@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vessel Handover Interface</title>
+    <!-- Load Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Main Grid Container -->
+    <div class="grid-container">
+
+        <!-- 1. Map/Vehicle Panel (Left) -->
+        <div id="map-panel" class="panel">
+            <h3 class="panel-title">Vessel Position</h3>
+            <div id="map-view" class="placeholder-content">
+                <span>[Vehicle Position Map Interface]</span>
+            </div>
+        </div>
+
+        <!-- 2. Visualization Tools Panel (Top Middle) -->
+        <div id="tools-panel" class="panel">
+            <h3 class="panel-title">Visualization Tools</h3>
+            <div class="placeholder-content">
+                <span>[Modular Data Visualization]</span>
+            </div>
+        </div>
+
+        <!-- 3. Checklist Panel (Right) -->
+        <div id="checklist-panel" class="panel">
+            <h3 class="panel-title">Bridge Check List: Handover</h3>
+            
+            <!-- Checklist Header -->
+            <div class="checklist-header">
+                <span class="header-item">Item</span>
+                <span class="header-remark">Remarks</span>
+            </div>
+
+            <!-- Checklist Items Container -->
+            <div class="checklist-items">
+                
+                <!-- Item 1 -->
+                <div class="checklist-item">
+                    <div class="item-check">
+                        <input type="checkbox">
+                    </div>
+                    <div class="item-label">
+                        Master's orders confirm.
+                    </div>
+                    <div class="item-remark">
+                        <textarea class="remark-input" placeholder="Notes..." rows="1"></textarea>
+                    </div>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="checklist-item">
+                    <div class="item-check">
+                        <input type="checkbox">
+                    </div>
+                    <div class="item-label">
+                        GNSS log up to date.
+                    </div>
+                    <div class="item-remark">
+                        <textarea class="remark-input" placeholder="Notes..." rows="1"></textarea>
+                    </div>
+                </div>
+                
+                <!-- Item 3 -->
+                <div class="checklist-item">
+                    <div class="item-check">
+                        <input type="checkbox">
+                    </div>
+                    <div class="item-label">
+                        Passage plan checked.
+                    </div>
+                    <div class="item-remark">
+                        <textarea class="remark-input" placeholder="Notes..." rows="1"></textarea>
+                    </div>
+                </div>
+
+                <!-- Item 4 -->
+                <div class="checklist-item">
+                    <div class="item-check">
+                        <input type="checkbox">
+                    </div>
+                    <div class="item-label">
+                        Weather reports reviewed.
+                    </div>
+                    <div class="item-remark">
+                        <textarea class="remark-input" placeholder="Notes..." rows="1"></textarea>
+                    </div>
+                </div>
+
+                <!-- Item 5 -->
+                <div class="checklist-item">
+                    <div class="item-check">
+                        <input type="checkbox">
+                    </div>
+                    <div class="item-label">
+                        Navigational warnings noted.
+                    </div>
+                    <div class="item-remark">
+                        <textarea class="remark-input" placeholder="Notes..." rows="1"></textarea>
+                    </div>
+                </div>
+
+                <!-- Item 6 -->
+                <div class="checklist-item">
+                    <div class="item-check">
+                        <input type="checkbox">
+                    </div>
+                    <div class="item-label">
+                        Status of AIS confirmed.
+                    </div>
+                    <div class="item-remark">
+                        <textarea class="remark-input" placeholder="Notes..." rows="1"></textarea>
+                    </div>
+                </div>
+
+                <!-- Item 7 -->
+                <div class="checklist-item">
+                    <div class="item-check">
+                        <input type="checkbox">
+                    </div>
+                    <div class="item-label">
+                        Status of Autopilot confirmed.
+                    </div>
+                    <div class="item-remark">
+                        <textarea class="remark-input" placeholder="Notes..." rows="1"></textarea>
+                    </div>
+                </div>
+
+                <!-- Item 8 -->
+                <div class="checklist-item">
+                    <div class="item-check">
+                        <input type="checkbox">
+                    </div>
+                    <div class="item-label">
+                        Echo sounder active.
+                    </div>
+                    <div class="item-remark">
+                        <textarea class="remark-input" placeholder="Notes..." rows="1"></textarea>
+                    </div>
+                </div>
+
+                <!-- Item 9 -->
+                <div class="checklist-item">
+                    <div class="item-check">
+                        <input type="checkbox">
+                    </div>
+                    <div class="item-label">
+                        Radar/ARPA active.
+                    </div>
+                    <div class="item-remark">
+                        <textarea class="remark-input" placeholder="Notes..." rows="1"></textarea>
+                    </div>
+                </div>
+
+                <!-- Item 10 -->
+                <div class="checklist-item">
+                    <div class="item-check">
+                        <input type="checkbox">
+                    </div>
+                    <div class="item-label">
+                        VHF/DSC checked.
+                    </div>
+                    <div class="item-remark">
+                        <textarea class="remark-input" placeholder="Notes..." rows="1"></textarea>
+                    </div>
+                </div>
+
+                <!-- Item 11 -->
+                <div class="checklist-item">
+                    <div class="item-check">
+                        <input type="checkbox">
+                    </div>
+                    <div class="item-label">
+                        Engine room status checked.
+                    </div>
+                    <div class="item-remark">
+                        <textarea class="remark-input" placeholder="Notes..." rows="1"></textarea>
+                    </div>
+                </div>
+
+                <!-- Item 12 -->
+                <div class="checklist-item">
+                    <div class="item-check">
+                        <input type="checkbox">
+                    </div>
+                    <div class="item-label">
+                        Ship Security Status green.
+                    </div>
+                    <div class="item-remark">
+                        <textarea class="remark-input" placeholder="Notes..." rows="1"></textarea>
+                    </div>
+                </div>
+
+                <!-- Item 13 -->
+                <div class="checklist-item">
+                    <div class="item-check">
+                        <input type="checkbox">
+                    </div>
+                    <div class="item-label">
+                        ECDIS operational.
+                    </div>
+                    <div class="item-remark">
+                        <textarea class="remark-input" placeholder="Notes..." rows="1"></textarea>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 4. Remarks Panel (Bottom Middle) -->
+        <div id="remarks-panel" class="panel">
+            <h3 class="panel-title">Remarks</h3>
+            <textarea id="remarks-editor" placeholder="Enter status remarks..."></textarea>
+        </div>
+
+        <!-- 5. Status Bar (Bottom Left) -->
+        <div id="status-bar" class="panel">
+            <h2>EXEMPLARY vessel title</h2>
+            <div id="timer">14:59</div>
+            <p>Time until safety gate</p>
+        </div>
+
+        <!-- 6. Control Bar (Bottom Center/Right) -->
+        <div id="control-bar" class="panel">
+            <button id="btn-configure" class="control-button">Configure...</button>
+            <button id="btn-ready" class="control-button">Assert Ready</button>
+            <button id="btn-abort" class="control-button">Abort Handover</button>
+        </div>
+
+    </div>
+</body>
+<script src="script.js"></script>
+</html>
