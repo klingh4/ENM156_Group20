@@ -192,7 +192,72 @@ html, body {
     border-bottom: 1px solid #374151;
     padding: 10px;
     transition: all 0.1s ease-out;
+    animation-name: itemFade;
+    animation-delay: 3s;
 }
+
+/* --- Entrance animations --- */
+body > * {
+    animation-name: slideUpFade;
+    animation-duration: 1s;
+}
+
+@keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideLeftFade {
+    0% { opacity: 0; transform: translateX(56px); }
+    100%   { opacity: 1; transform: translateX(0); }
+}
+
+/* Checklist items animate after panels, small stagger per item */
+.checklist-items .checklist-item {
+    opacity: 0;
+    animation: slideLeftFade 2s cubic-bezier(.22,.9,.35,1) forwards;
+}
+.checklist-items .checklist-item:nth-child(1){ animation-delay: 0.6s; }
+.checklist-items .checklist-item:nth-child(2){ animation-delay: 0.68s; }
+.checklist-items .checklist-item:nth-child(3){ animation-delay: 0.76s; }
+.checklist-items .checklist-item:nth-child(4){ animation-delay: 0.84s; }
+.checklist-items .checklist-item:nth-child(5){ animation-delay: 0.92s; }
+.checklist-items .checklist-item:nth-child(6){ animation-delay: 1.00s; }
+.checklist-items .checklist-item:nth-child(7){ animation-delay: 1.08s; }
+.checklist-items .checklist-item:nth-child(8){ animation-delay: 1.16s; }
+.checklist-items .checklist-item:nth-child(9){ animation-delay: 1.24s; }
+.checklist-items .checklist-item:nth-child(10){ animation-delay: 1.32s; }
+.checklist-items .checklist-item:nth-child(11){ animation-delay: 1.40s; }
+.checklist-items .checklist-item:nth-child(12){ animation-delay: 1.48s; }
+.checklist-items .checklist-item:nth-child(13){ animation-delay: 1.56s; }
+.checklist-items .checklist-item:nth-child(14){ animation-delay: 1.64s; }
+.checklist-items .checklist-item:nth-child(15){ animation-delay: 1.72s; }
+.checklist-items .checklist-item:nth-child(16){ animation-delay: 1.80s; }
+.checklist-items .checklist-item:nth-child(17){ animation-delay: 1.88s; }
+.checklist-items .checklist-item:nth-child(18){ animation-delay: 1.96s; }
+.checklist-items .checklist-item:nth-child(19){ animation-delay: 2.04s; }
+.checklist-items .checklist-item:nth-child(20){ animation-delay: 2.12s; }
+.checklist-items .checklist-item:nth-child(21){ animation-delay: 2.20s; }
+.checklist-items .checklist-item:nth-child(22){ animation-delay: 2.28s; }
+.checklist-items .checklist-item:nth-child(23){ animation-delay: 2.36s; }
+.checklist-items .checklist-item:nth-child(24){ animation-delay: 2.44s; }
+.checklist-items .checklist-item:nth-child(25){ animation-delay: 2.52s; }
+.checklist-items .checklist-item:nth-child(26){ animation-delay: 2.60s; }
+.checklist-items .checklist-item:nth-child(27){ animation-delay: 2.68s; }
+.checklist-items .checklist-item:nth-child(28){ animation-delay: 2.76s; }
+.checklist-items .checklist-item:nth-child(29){ animation-delay: 2.84s; }
+.checklist-items .checklist-item:nth-child(30){ animation-delay: 2.92s; }
+.checklist-items .checklist-item:nth-child(31){ animation-delay: 3.00s; }
+.checklist-items .checklist-item:nth-child(32){ animation-delay: 3.08s; }
+.checklist-items .checklist-item:nth-child(33){ animation-delay: 3.16s; }
+.checklist-items .checklist-item:nth-child(34){ animation-delay: 3.24s; }
+.checklist-items .checklist-item:nth-child(35){ animation-delay: 3.32s; }
+.checklist-items .checklist-item:nth-child(36){ animation-delay: 3.40s; }
+.checklist-items .checklist-item:nth-child(37){ animation-delay: 3.48s; }
+.checklist-items .checklist-item:nth-child(38){ animation-delay: 3.56s; }
+.checklist-items .checklist-item:nth-child(39){ animation-delay: 3.64s; }
+.checklist-items .checklist-item:nth-child(40){ animation-delay: 3.72s; }
+
 .checklist-item:nth-child(even) {
     background-color: #1d2633;
 }
@@ -220,7 +285,7 @@ html, body {
 }
 
 
-.checklist-item:focus-within {
+.whole-row-textarea {
     grid-template-areas: 
         "check item item"
         "remark remark remark";
@@ -228,7 +293,7 @@ html, body {
     padding-bottom: 16px; /* Add space for expanded text */
 }
 
-.checklist-item:focus-within .item-remark {
+.whole-row-textarea .item-remark {
     padding-top: 8px; /* Add top margin to remark field */
 }
 
@@ -280,4 +345,11 @@ html, body {
 #btn-abort:hover {
     background-color: #B91C1C;
     border-color: #B91C1C;
+}
+
+.leaflet-layer,
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out,
+.leaflet-control-attribution {
+  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
 }
