@@ -7,6 +7,6 @@ WORKDIR /usr/src/app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ship_sim.py roc_sim.py .
+COPY ../ship_simulator_zenoh/ship_sim.py roc_sim.py ./
 
 CMD [ "/bin/sh" ]
