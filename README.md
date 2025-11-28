@@ -23,3 +23,8 @@ Run the following commands in a terminal:
 
   docker ps # note the Container ID
   docker exec -it <container ID> /bin/sh
+
+=== How to run multiple Docker containers
+
+  docker run -it --network=host <image> # In one terminal
+  docker run -it --network=host <image> # In another terminal
