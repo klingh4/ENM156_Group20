@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,10 +11,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
     <!-- Main Grid Container -->
@@ -38,7 +38,7 @@
         <!-- 3. Checklist Panel (Right) -->
         <div id="checklist-panel" class="panel">
             <h3 class="panel-title">Bridge Check List: Handover</h3>
-            
+
             <!-- Checklist Header -->
             <div class="checklist-header">
                 <span class="header-item">Item</span>
@@ -47,7 +47,7 @@
 
             <!-- Checklist Items Container -->
             <div class="checklist-items">
-                
+
                 <!-- Item 1 -->
                 <div class="checklist-item">
                     <div class="item-check">
@@ -73,7 +73,7 @@
                         <textarea class="remark-input" placeholder="Notes..." rows="1"></textarea>
                     </div>
                 </div>
-                
+
                 <!-- Item 3 -->
                 <div class="checklist-item">
                     <div class="item-check">
@@ -242,5 +242,5 @@
 
     </div>
 </body>
-<script src="script.js"></script>
+<script src="dist/bundle.js" type="module"></script>
 </html>
