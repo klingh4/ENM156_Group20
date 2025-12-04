@@ -24,7 +24,16 @@ Run the following commands in a terminal:
   docker ps # note the Container ID
   docker exec -it <container ID> /bin/sh
 
-=== How to run multiple Docker containers
+=== How to run multiple Docker containers ===
 
   docker run -it --network=host <image> # In one terminal
   docker run -it --network=host <image> # In another terminal
+
+=== Running the python-tkinter gui ===
+
+You need to have tk support installed on your machine (for example by installing your distribution's
+tk package).
+
+You also need to have the tkintermapview python package, which can be installed via pip.
+
+TODO: Make dependencies portable somehow.
