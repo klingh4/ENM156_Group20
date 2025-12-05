@@ -1,6 +1,7 @@
 {
     "include": [
-        "./src/main.ts"
+        "./src/main.ts",
+        "./src/global.d.ts"
     ],
     "compilerOptions": {
         // File Layout
@@ -40,6 +41,11 @@
         "moduleResolution": "bundler",
         "baseUrl": ".",
         "esModuleInterop": true,
-        "allowJs": true
+        "allowJs": true,
+        "plugins": [
+            {
+                "name": "typescript-plugin-css-modules"
+            }
+        ]
     }
 }
