@@ -100,6 +100,7 @@ html, body {
     background-color: #111827; /* Darkest inner background */
     color: #4B5563;
     font-weight: 500;
+    flex-direction: column;
 }
 
 /* Status Bar (Bottom Left) */
