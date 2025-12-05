@@ -1,5 +1,12 @@
 import { map, latLng, tileLayer, type MapOptions, marker, type LatLngExpression, Map as LeafMap, Marker } from "leaflet";
 
+import "leaflet/dist/leaflet.css";
+import "leaflet/dist/images/layers.png";
+import "leaflet/dist/images/layers-2x.png";
+import "leaflet/dist/images/marker-icon.png";
+import "leaflet/dist/images/marker-icon-2x.png";
+import "leaflet/dist/images/marker-shadow.png";
+
 let mymap: LeafMap;
 
 let markers = new Map<string, Marker>();
