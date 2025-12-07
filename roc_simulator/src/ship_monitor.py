@@ -115,7 +115,10 @@ class ShipTelemetryMonitor:
                 self.extra_callbacks['handle_sog'](self.sog)
 
     def _handle_name(self, sample):
-        self._decode(sample, TimestampedString)
+        msg = self._decode(sample, TimestampedString)
+        if msg:
+            if 'handle_name' in self.extra_callbacks:
+                self.extra_callbacks['handle_name'](msg.value)
 
     def _handle_mmsi(self, sample):
         msg = self._decode(sample, TimestampedInt)
