@@ -100,6 +100,33 @@ class RocGui:
         sog_out_label = tk.Label(control_frame, text="---", font=("Arial", 10), fg="blue")
         sog_out_label.grid(row=3, column=1, sticky="w", pady=5)
 
+        self.cog_out_label = cog_out_label
+        self.sog_out_label = sog_out_label
+
+        # Separator
+        ttk.Separator(control_frame, orient='horizontal').grid(row=4, column=0, columnspan=3, sticky="ew", pady=15)
+
+        # Position Display
+        tk.Label(control_frame, text="Current Position:", font=("Arial", 12, "bold")).grid(row=5, column=0, sticky="w", pady=5)
+
+        tk.Label(control_frame, text="Latitude:", font=("Arial", 10)).grid(row=6, column=0, sticky="w", pady=5)
+        lat_label = tk.Label(control_frame, text="---", font=("Arial", 10), fg="green")
+        lat_label.grid(row=6, column=1, sticky="w", pady=5)
+
+        tk.Label(control_frame, text="Longitude:", font=("Arial", 10)).grid(row=7, column=0, sticky="w", pady=5)
+        lon_label = tk.Label(control_frame, text="---", font=("Arial", 10), fg="green")
+        lon_label.grid(row=7, column=1, sticky="w", pady=5)
+
+        self.lat_label = lat_label
+        self.lon_label = lon_label
+
+        # State display
+        tk.Label(control_frame, text="Vehicle State:", font=("Arial", 10)).grid(row=9, column=0, sticky="w", pady=5)
+        state_label = tk.Label(control_frame, text="---", font=("Arial", 10), fg="orange")
+        state_label.grid(row=9, column=1, sticky="w", pady=5)
+
+        self.state_label = state_label
+
         print(f"{self.__class__.__name__} initialized.")
 
     def mainloop(self):
@@ -111,9 +138,22 @@ class RocGui:
     def send_sog(self, sog):
         print(f"(Placeholder) Send SOG: {sog}")
 
+    # Setup GUI callbacks for ship updates
+    def update_cog_out(self, value):
+        self.cog_out_label.config(text=value)
+
+    def update_sog_out(self, value):
+        self.sog_out_label.config(text=value)
+
+    def update_state(self, value):
+        self.state_label.config(text=value)
+
     # Update map position to given lat/long
     def update_map_position(self, lat_val, lon_val):
         try:
+            self.lat_label.config(text=lat_val)
+            self.lon_label.config(text=lon_val)
+
             # To counter flickering, set a limit to map widget update frequency
             if time.time() > self.map_widget_last_updated_time + MAP_WIDGET_UPDATE_CAP:
                 if self.marker:
@@ -123,52 +163,6 @@ class RocGui:
                 self.map_widget_last_updated_time = time.time()
         except ValueError:
             pass
-
-
-
-    ## Separator
-    #ttk.Separator(control_frame, orient='horizontal').grid(row=4, column=0, columnspan=3, sticky="ew", pady=15)
-
-    ## Position Display
-    #tk.Label(control_frame, text="Current Position:", font=("Arial", 12, "bold")).grid(row=5, column=0, sticky="w", pady=5)
-
-    #tk.Label(control_frame, text="Latitude:", font=("Arial", 10)).grid(row=6, column=0, sticky="w", pady=5)
-    #lat_label = tk.Label(control_frame, text="---", font=("Arial", 10), fg="green")
-    #lat_label.grid(row=6, column=1, sticky="w", pady=5)
-
-    #tk.Label(control_frame, text="Longitude:", font=("Arial", 10)).grid(row=7, column=0, sticky="w", pady=5)
-    #lon_label = tk.Label(control_frame, text="---", font=("Arial", 10), fg="green")
-    #lon_label.grid(row=7, column=1, sticky="w", pady=5)
-
-    ## Update position button
-    #update_map_btn = tk.Button(control_frame, text="Update Map Position", font=("Arial", 10),
-    #                           command=update_map_position)
-    #update_map_btn.grid(row=8, column=0, columnspan=2, pady=10)
-
-    ## State display
-    #tk.Label(control_frame, text="Vehicle State:", font=("Arial", 10)).grid(row=9, column=0, sticky="w", pady=5)
-    #state_label = tk.Label(control_frame, text="---", font=("Arial", 10), fg="orange")
-    #state_label.grid(row=9, column=1, sticky="w", pady=5)
-
-    ## Setup GUI callbacks for Zenoh updates
-    #def update_cog_out(value):
-    #    cog_out_label.config(text=value)
-
-    #def update_sog_out(value):
-    #    sog_out_label.config(text=value)
-
-    #def update_lat(value):
-    #    lat_label.config(text=value)
-    #    # Auto-update map when new position received
-    #    root.after(100, update_map_position)
-
-    #def update_lon(value):
-    #    lon_label.config(text=value)
-    #    # Auto-update map when new position received
-    #    root.after(100, update_map_position)
-
-    #def update_state(value):
-    #    state_label.config(text=value)
 
     ## -------------------------------------------------------
     ## INTERACTIVE CHECKLIST

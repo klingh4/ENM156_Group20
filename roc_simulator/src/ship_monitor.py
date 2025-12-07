@@ -97,18 +97,22 @@ class ShipTelemetryMonitor:
         msg = self._decode(sample, LocationFix)
         if msg:
             self.location = (msg.latitude, msg.longitude)
-        if 'handle_location' in self.extra_callbacks:
-            self.extra_callbacks['handle_location'](msg.latitude, msg.longitude)
+            if 'handle_location' in self.extra_callbacks:
+                self.extra_callbacks['handle_location'](self.location[0], self.location[1])
 
     def _handle_cog(self, sample):
         msg = self._decode(sample, TimestampedFloat)
         if msg:
             self.cog = msg.value
+            if 'handle_cog' in self.extra_callbacks:
+                self.extra_callbacks['handle_cog'](self.cog)
 
     def _handle_sog(self, sample):
         msg = self._decode(sample, TimestampedFloat)
         if msg:
             self.sog = msg.value
+            if 'handle_sog' in self.extra_callbacks:
+                self.extra_callbacks['handle_sog'](self.sog)
 
     def _handle_name(self, sample):
         self._decode(sample, TimestampedString)
@@ -117,29 +121,41 @@ class ShipTelemetryMonitor:
         msg = self._decode(sample, TimestampedInt)
         if msg:
             self.mmsi = msg.value
+            if 'handle_mmsi' in self.extra_callbacks:
+                self.extra_callbacks['handle_mmsi'](self.mmsi)
 
     def _handle_imo(self, sample):
         msg = self._decode(sample, TimestampedInt)
         if msg:
             self.imo = msg.value
+            if 'handle_imo' in self.extra_callbacks:
+                self.extra_callbacks['handle_imo'](self.imo)
 
     def _handle_nav_status(self, sample):
         msg = self._decode(sample, VesselNavStatus)
         if msg:
             self.nav_status = VesselNavStatus.NavigationStatus.Name(msg.navigation_status)
+            if 'handle_nav_status' in self.extra_callbacks:
+                self.extra_callbacks['handle_nav_status'](self.nav_status)
 
     def _handle_roc_status(self, sample):
-        self._decode(sample, ROCStatus)
+        roc_status = self._decode(sample, ROCStatus)
+        if 'handle_roc_status' in self.extra_callbacks:
+            self.extra_callbacks['handle_roc_status'](self.roc_status)
 
     def _handle_remote_status(self, sample):
         try:
             self.remote_status = sample.payload.to_string()
+            if 'handle_remote_status' in self.extra_callbacks:
+                self.extra_callbacks['handle_remote_status'](self.remote_status)
         except:
             self.remote_status = None
 
     def _handle_remote_time(self, sample):
         try:
             self.remote_time = float(sample.payload.to_string())
+            if 'handle_remote_time' in self.extra_callbacks:
+                self.extra_callbacks['handle_remote_time'](self.remote_time)
         except:
             self.remote_time = None
 
