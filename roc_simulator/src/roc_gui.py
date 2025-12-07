@@ -66,17 +66,46 @@ class RocGui:
         frame_visual = tk.LabelFrame(root, text="Visualization / Data Modules")
         frame_visual.grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
 
-        ## Create control panel
+        # Create control panel
         control_frame = tk.Frame(frame_visual)
         control_frame.pack(expand=True, fill="both", padx=10, pady=10)
 
-        self.frame_visual = frame_visual
-        self.control_frame = control_frame
+        # COG Control
+        tk.Label(control_frame, text="Course Over Ground (COG):", font=("Arial", 12, "bold")).grid(row=0, column=0, sticky="w", pady=5)
+        cog_entry = tk.Entry(control_frame, font=("Arial", 12), width=15)
+        cog_entry.grid(row=0, column=1, padx=10, pady=5)
+        cog_send_btn = tk.Button(control_frame, text="Send COG", font=("Arial", 10), 
+                                 command=lambda: self.send_cog(cog_entry.get()))
+        cog_send_btn.grid(row=0, column=2, padx=5, pady=5)
+
+        # COG Output display
+        tk.Label(control_frame, text="COG Output:", font=("Arial", 10)).grid(row=1, column=0, sticky="w", pady=5)
+        cog_out_label = tk.Label(control_frame, text="---", font=("Arial", 10), fg="blue")
+        cog_out_label.grid(row=1, column=1, sticky="w", pady=5)
+
+        # SOG Control
+        tk.Label(control_frame, text="Speed Over Ground (SOG):", font=("Arial", 12, "bold")).grid(row=2, column=0, sticky="w", pady=5)
+        sog_entry = tk.Entry(control_frame, font=("Arial", 12), width=15)
+        sog_entry.grid(row=2, column=1, padx=10, pady=5)
+        sog_send_btn = tk.Button(control_frame, text="Send SOG", font=("Arial", 10),
+                                 command=lambda: self.send_sog(sog_entry.get()))
+        sog_send_btn.grid(row=2, column=2, padx=5, pady=5)
+
+        # SOG Output display
+        tk.Label(control_frame, text="SOG Output:", font=("Arial", 10)).grid(row=3, column=0, sticky="w", pady=5)
+        sog_out_label = tk.Label(control_frame, text="---", font=("Arial", 10), fg="blue")
+        sog_out_label.grid(row=3, column=1, sticky="w", pady=5)
 
         print(f"{self.__class__.__name__} initialized.")
 
     def mainloop(self):
         self.root.mainloop()
+
+    def send_cog(self, cog):
+        print(f"(Placeholder) Send COG: {cog}")
+
+    def send_sog(self, sog):
+        print(f"(Placeholder) Send SOG: {sog}")
 
     # Update map position to given lat/long
     def update_map_position(self, lat_val, lon_val):
@@ -88,31 +117,7 @@ class RocGui:
         except ValueError:
             pass
 
-    ## COG Control
-    #tk.Label(control_frame, text="Course Over Ground (COG):", font=("Arial", 12, "bold")).grid(row=0, column=0, sticky="w", pady=5)
-    #cog_entry = tk.Entry(control_frame, font=("Arial", 12), width=15)
-    #cog_entry.grid(row=0, column=1, padx=10, pady=5)
-    #cog_send_btn = tk.Button(control_frame, text="Send COG", font=("Arial", 10), 
-    #                         command=lambda: zenoh_conn.send_cog(cog_entry.get()))
-    #cog_send_btn.grid(row=0, column=2, padx=5, pady=5)
 
-    ## COG Output display
-    #tk.Label(control_frame, text="COG Output:", font=("Arial", 10)).grid(row=1, column=0, sticky="w", pady=5)
-    #cog_out_label = tk.Label(control_frame, text="---", font=("Arial", 10), fg="blue")
-    #cog_out_label.grid(row=1, column=1, sticky="w", pady=5)
-
-    ## SOG Control
-    #tk.Label(control_frame, text="Speed Over Ground (SOG):", font=("Arial", 12, "bold")).grid(row=2, column=0, sticky="w", pady=5)
-    #sog_entry = tk.Entry(control_frame, font=("Arial", 12), width=15)
-    #sog_entry.grid(row=2, column=1, padx=10, pady=5)
-    #sog_send_btn = tk.Button(control_frame, text="Send SOG", font=("Arial", 10),
-    #                         command=lambda: zenoh_conn.send_sog(sog_entry.get()))
-    #sog_send_btn.grid(row=2, column=2, padx=5, pady=5)
-
-    ## SOG Output display
-    #tk.Label(control_frame, text="SOG Output:", font=("Arial", 10)).grid(row=3, column=0, sticky="w", pady=5)
-    #sog_out_label = tk.Label(control_frame, text="---", font=("Arial", 10), fg="blue")
-    #sog_out_label.grid(row=3, column=1, sticky="w", pady=5)
 
     ## Separator
     #ttk.Separator(control_frame, orient='horizontal').grid(row=4, column=0, columnspan=3, sticky="ew", pady=15)
