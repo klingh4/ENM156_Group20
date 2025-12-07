@@ -1,10 +1,10 @@
+import datetime
+import time
 import tkinter as tk
+
 from tkinter import ttk
 from tkinter.scrolledtext import ScrolledText
-import time
-import threading
 from tkintermapview import TkinterMapView
-import zenoh
 
 
 # Don't update map widget more often than this to avoid flickering
@@ -230,7 +230,9 @@ class RocGui:
         self.state_label.config(text=value)
 
     def update_remote_time(self, value):
-        self.timer_label.config(text=value)
+        ## Format into hh:mm:ss at one second precision
+        time_fmt = str(datetime.timedelta(seconds=int(value)))
+        self.timer_label.config(text=time_fmt)
 
     def update_vehicle_name(self, value):
         self.vehicle_label.config(text=value)
