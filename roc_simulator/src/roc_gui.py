@@ -7,6 +7,9 @@ from tkintermapview import TkinterMapView
 import zenoh
 
 
+# Don't update map widget more often than this to avoid flickering
+MAP_WIDGET_UPDATE_CAP = 5
+
 # -------------------------------------------------------
 # Countdown timer
 # -------------------------------------------------------
@@ -52,13 +55,14 @@ class RocGui:
 
         map_widget = TkinterMapView(frame_map, width=600, height=500, corner_radius=0)
         map_widget.set_position(59.3293, 18.0686)  # Stockholm example
-        map_widget.set_zoom(7)
+        map_widget.set_zoom(3)
         map_widget.pack(expand=True, fill="both")
 
         self.marker = None
         self.root = root
         self.frame_map = frame_map
         self.map_widget = map_widget
+        self.map_widget_last_updated_time = 0
 
         ## -------------------------------------------------------
         ## Visualisation area with Zenoh controls
@@ -110,10 +114,13 @@ class RocGui:
     # Update map position to given lat/long
     def update_map_position(self, lat_val, lon_val):
         try:
-            if self.marker:
-                self.marker.delete()
-            self.marker = self.map_widget.set_marker(lat_val, lon_val, text="MASS")
-            self.map_widget.set_position(lat_val, lon_val)
+            # To counter flickering, set a limit to map widget update frequency
+            if time.time() > self.map_widget_last_updated_time + MAP_WIDGET_UPDATE_CAP:
+                if self.marker:
+                    self.marker.delete()
+                self.marker = self.map_widget.set_marker(lat_val, lon_val, text="MASS_0")
+                self.map_widget.set_position(lat_val, lon_val)
+                self.map_widget_last_updated_time = time.time()
         except ValueError:
             pass
 
