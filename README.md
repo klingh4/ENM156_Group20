@@ -2,13 +2,34 @@
 
 This repository contains code related to ROC and ship simulation.
 
-=== How to set up the submodule ===
+=== How to set up the ship simulator submodule ===
 
 Run the following commands in a terminal:
   cd ship_simulator_zenoh
   git submodule init
   cd ..
   git submodule update --remote
+
+
+== Running the python-tkinter ROC simulator GUI ==
+
+You need to have tk support installed on your machine (for example by installing your distribution's
+tk and/or python3-tk package).
+
+You also need to have the following python packages, which can be installed via pip:
+`pip install tkintermapview eclipse-zenoh keelson protobuf matplotlib`
+
+If you cannot install them system-wide you may need to create a virtual environment using venv:
+`python -m venv <venvdir>`
+
+Followed by activating the environment. In bash, cd to <venvdir> and `source bin/activate`.
+
+Finally, run `python3 roc_main.py`.
+
+TODO: Make dependencies portable somehow.
+
+
+== Running the CLI ROC simulator (not compatible with later ship simulator versions anymore) ==
 
 === How to set up the Docker image ===
 
@@ -29,11 +50,3 @@ Run the following commands in a terminal:
   docker run -it --network=host <image> # In one terminal
   docker run -it --network=host <image> # In another terminal
 
-=== Running the python-tkinter gui ===
-
-You need to have tk support installed on your machine (for example by installing your distribution's
-tk package).
-
-You also need to have the tkintermapview python package, which can be installed via pip.
-
-TODO: Make dependencies portable somehow.
