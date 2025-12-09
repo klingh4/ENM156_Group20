@@ -35,6 +35,7 @@ pytest_cache/
 .idea/
 *.swp
 *.swo
+[dD][sS]_[sS]tore
 
 # Local config
 .env
