@@ -24,7 +24,9 @@ If you cannot install them system-wide you may need to create a virtual environm
 
 Followed by activating the environment. In bash, cd to <venvdir> and `source bin/activate`.
 
-Finally, run `python3 roc_main.py`.
+Finally, run `python3 roc_simulator/src/roc_main.py`.
+
+Then, in another terminal with the environment setup, run `python3 ship_simulator_zenoh/src/ship_sim.py`
 
 TODO: Make dependencies portable somehow.
 
