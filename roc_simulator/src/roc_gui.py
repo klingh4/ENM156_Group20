@@ -1,6 +1,7 @@
 import datetime
 import time
 import tkinter as tk
+import sys
 
 from tkinter import ttk
 from tkinter.scrolledtext import ScrolledText
@@ -253,3 +254,6 @@ class RocGui:
         except ValueError:
             pass
 
+if __name__ == '__main__':
+    print("Please run roc_main.py instead.")
+    sys.exit(1)
