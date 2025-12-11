@@ -19,9 +19,9 @@ class RocGui:
         root.title("Vehicle Readiness Panel – Interactive")
         root.geometry("1800x980")
 
-        root.columnconfigure(0, weight=2)
-        root.columnconfigure(1, weight=2)
-        root.columnconfigure(2, weight=1)
+        root.columnconfigure(0, weight=3, uniform="cols")
+        root.columnconfigure(1, weight=3, uniform="cols")
+        root.columnconfigure(2, weight=2, uniform="cols")
         root.rowconfigure(0, weight=3)
         root.rowconfigure(1, weight=1)
         root.rowconfigure(2, weight=1)
@@ -115,7 +115,7 @@ class RocGui:
         # INTERACTIVE CHECKLIST
         # -------------------------------------------------------
         frame_checklist = tk.LabelFrame(root, text="Bridge Checklist")
-        frame_checklist.grid(row=0, column=2, rowspan=3, sticky="nsew", padx=10, pady=10)
+        frame_checklist.grid(row=0, column=2, sticky="nsew", padx=10, pady=10)
 
         checklist_items = [
             "Position checked",
@@ -151,7 +151,7 @@ class RocGui:
         # NOTES EDITOR
         # -------------------------------------------------------
         frame_notes = tk.LabelFrame(root, text="Remarks about vehicle status")
-        frame_notes.grid(row=1, column=1, sticky="nsew", padx=10, pady=10)
+        frame_notes.grid(row=1, column=2, sticky="nsew", padx=10, pady=10)
 
         notes_field = ScrolledText(frame_notes, height=5)
         notes_field.pack(expand=True, fill="both")
