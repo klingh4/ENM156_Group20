@@ -278,9 +278,24 @@
 
         <!-- 5. Status Bar (Bottom Left) -->
         <div id="status-bar" class="panel">
-            <h2 id="vessel-title-display">Awaiting Vessel...</h2>
-            <div id="timer">--:--</div>
-            <p>Seconds until safety gate</p>
+            <!-- Left Side: Vessel Info & Timer -->
+            <div class="status-main">
+                <h2 id="vessel-title-display">Awaiting Vessel...</h2>
+                <div id="timer">--:--</div>
+                <p>Seconds until safety gate</p>
+            </div>
+            
+            <!-- Right Side: ROC Readiness Indicators -->
+            <div class="status-indicators">
+                <div class="status-item">
+                    <span class="status-label" id="status-original-label">Original ROC</span>
+                    <span id="orig-roc-status" class="status-badge status-uncertain">UNCERTAIN</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label" id="status-receiving-label">Receiving ROC</span>
+                    <span id="recv-roc-status" class="status-badge status-uncertain">UNCERTAIN</span>
+                </div>
+            </div>
         </div>
 
         <!-- 6. Control Bar (Bottom Center/Right) -->

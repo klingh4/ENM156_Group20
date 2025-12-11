@@ -76,7 +76,10 @@ html, body {
     background-color: transparent;
     border: none;
     padding: 0;
-    justify-content: center;
+    /* Flex row to allow left/right layout */
+    flex-direction: row; 
+    justify-content: space-between;
+    align-items: center;
 }
 #control-bar { 
     grid-area: controls;
@@ -103,7 +106,50 @@ html, body {
     flex-direction: column;
 }
 
-/* Status Bar (Bottom Left) */
+/* Status Bar */
+.status-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.status-indicators {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+    align-items: flex-end; /* Align to the right */
+    padding-right: 20px;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.status-label {
+    font-size: 0.875rem;
+    color: #9CA3AF;
+    font-weight: 500;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    min-width: 80px;
+    text-align: center;
+}
+
+.status-uncertain { background-color: #374151; color: #9CA3AF; }
+.status-ready { background-color: #059669; color: #d1fae5; }
+.status-aborted { background-color: #dc2626; color: #fee2e2; }
+
 #status-bar h2 {
     margin: 0 0 8px 0;
     color: #F9FAFB;
