@@ -16,7 +16,7 @@ MAP_WIDGET_UPDATE_CAP = 5
 class RocGui:
     def __init__(self):
         root = tk.Tk()
-        root.title("Vehicle Readiness Panel – Interactive")
+        root.title("Vessel Readiness Panel – Interactive")
         root.geometry("1800x980")
 
         root.columnconfigure(0, weight=3, uniform="cols")
@@ -32,7 +32,7 @@ class RocGui:
         # -------------------------------------------------------
         # VEHICLE MAP PANEL (live-map)
         # -------------------------------------------------------
-        frame_map = tk.LabelFrame(root, text="Vehicle position map")
+        frame_map = tk.LabelFrame(root, text="Vessel position map")
         frame_map.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
 
         map_widget = TkinterMapView(frame_map, width=600, height=500, corner_radius=0)
@@ -125,7 +125,7 @@ class RocGui:
         self.lon_label = lon_label
 
         # State display
-        tk.Label(control_frame, text="Vehicle State:", font=("Arial", 10)).grid(row=9, column=0, sticky="w", pady=5)
+        tk.Label(control_frame, text="Vessel State:", font=("Arial", 10)).grid(row=9, column=0, sticky="w", pady=5)
         state_label = tk.Label(control_frame, text="---", font=("Arial", 10), fg="orange")
         state_label.grid(row=9, column=1, sticky="w", pady=5)
 
@@ -170,7 +170,7 @@ class RocGui:
         # -------------------------------------------------------
         # NOTES EDITOR
         # -------------------------------------------------------
-        frame_notes = tk.LabelFrame(root, text="Remarks about vehicle status")
+        frame_notes = tk.LabelFrame(root, text="Remarks about vessel status")
         frame_notes.grid(row=1, column=2, sticky="nsew", padx=10, pady=10)
 
         notes_field = ScrolledText(frame_notes, height=5)
@@ -182,15 +182,15 @@ class RocGui:
         frame_info = tk.Frame(control_frame)
         frame_info.grid(row=10, column=0, sticky="nsew")
 
-        vehicle_label = tk.Label(frame_info, text="Vehicle Name", font=("Arial", 20))
-        vehicle_label.pack(pady=10)
+        vessel_label = tk.Label(frame_info, text="Vessel Name", font=("Arial", 20))
+        vessel_label.pack(pady=10)
 
         timer_label = tk.Label(frame_info, text="--:--", font=("Arial", 36))
         timer_label.pack(pady=5)
 
         tk.Label(frame_info, text="Time left until safety gate", font=("Arial", 14)).pack()
 
-        self.vehicle_label = vehicle_label
+        self.vessel_label = vessel_label
         self.timer_label = timer_label
 
         # -------------------------------------------------------
@@ -249,7 +249,7 @@ class RocGui:
         print("-------------------------\n")
 
     def handle_abort(self):
-        """Handle abort button - stop the vehicle"""
+        """Handle abort button - stop the vessel"""
         print("\n!!! ABORT BUTTON PRESSED !!!")
         self.send_sog(0)
 
@@ -268,8 +268,8 @@ class RocGui:
         time_fmt = str(datetime.timedelta(seconds=int(value)))
         self.timer_label.config(text=time_fmt)
 
-    def update_vehicle_name(self, value):
-        self.vehicle_label.config(text=value)
+    def update_vessel_name(self, value):
+        self.vessel_label.config(text=value)
 
     # Update map position to given lat/long
     def update_map_position(self, lat_val, lon_val):
