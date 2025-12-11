@@ -240,49 +240,6 @@ class RocGui:
         notes_field = ScrolledText(frame_notes, height=5)
         notes_field.pack(expand=True, fill="both")
 
-        # -------------------------------------------------------
-        # VEHICLE NAME + TIMER
-        # -------------------------------------------------------
-        #frame_info = tk.Frame(control_frame)
-        #frame_info.grid(row=10, column=0, sticky="nsew")
-
-        #vessel_label = tk.Label(frame_info, text="Vessel Name", font=("Arial", 20))
-        #vessel_label.pack(pady=10)
-
-        #timer_label = tk.Label(frame_info, text="--:--", font=("Arial", 36))
-        #timer_label.pack(pady=5)
-
-        #tk.Label(frame_info, text="Time left until safety gate", font=("Arial", 14)).pack()
-
-        #self.vessel_label = vessel_label
-        #self.timer_label = timer_label
-
-        # -------------------------------------------------------
-        # BOTTOM BUTTONS
-        # -------------------------------------------------------
-        #frame_buttons = tk.Frame(root)
-        #frame_buttons.grid(row=2, column=0, columnspan=2, pady=20)
-
-        #btn_ready = tk.Button(
-        #    frame_buttons,
-        #    text="ASSERT READY",
-        #    font=("Arial", 22),
-        #    width=15,
-        #    bg="green",
-        #    command=self.print_check_status
-        #)
-        #btn_ready.grid(row=0, column=0, padx=40)
-
-        #btn_abort = tk.Button(
-        #    frame_buttons,
-        #    text="ABORT",
-        #    font=("Arial", 22),
-        #    width=15,
-        #    bg="red",
-        #    command=self.handle_abort
-        #)
-        #btn_abort.grid(row=0, column=1, padx=40)
-
         # Bit of an ugly hack - but if we get handed this we can properly close
         # the zenoh session and thus properly exit on closing the window.
         self.monitor = None
