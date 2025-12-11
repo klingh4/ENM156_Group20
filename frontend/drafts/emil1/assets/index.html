@@ -13,6 +13,55 @@
 
 <body>
 
+    <!-- 1. Setup ROC Dialog -->
+    <dialog id="setup-roc-dialog" class="modal-overlay">
+        <div class="modal-content panel">
+            <h3 class="panel-title">ROC Setup</h3>
+            <form id="setup-roc-form">
+                <div class="form-group">
+                    <label for="this-roc-id">This ROC ID</label>
+                    <input type="text" id="this-roc-id" name="thisRocId" placeholder="e.g. ROC_1" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="control-button">Next</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+    
+    <!-- 2. Handover Configuration Dialog -->
+    <dialog id="config-handover-dialog" class="modal-overlay">
+        <div class="modal-content panel">
+            <h3 class="panel-title">Handover Configuration</h3>
+            <form id="config-handover-form">
+                <div class="form-group"
+                    style="border-bottom: 1px solid #374151; padding-bottom: 16px; margin-bottom: 16px;">
+                    <label for="handover-file">Load from JSON (Optional)</label>
+                    <input type="file" id="handover-file" accept=".json">
+                </div>
+                <div class="form-group">
+                    <label for="original-roc-id">Originally Responsible ROC ID</label>
+                    <input type="text" id="original-roc-id" name="originalRocId" placeholder="e.g. ROC_1" required>
+                </div>
+                <div class="form-group">
+                    <label for="receiving-roc-id">Receiving Responsibility ROC ID</label>
+                    <input type="text" id="receiving-roc-id" name="receivingRocId" placeholder="e.g. ROC_2" required>
+                </div>
+                <div class="form-group">
+                    <label for="gate-id">Safety Gate ID</label>
+                    <input type="text" id="gate-id" name="gateId" value="safety-gate-1" required>
+                </div>
+                <div class="form-group">
+                    <label for="vessel-id">Vessel ID (MASS)</label>
+                    <input type="text" id="vessel-id" name="vesselId" value="MASS_0" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="control-button">Start Session</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
     <!-- Main Grid Container -->
     <div class="grid-container">
 
@@ -20,7 +69,7 @@
         <div id="map-panel" class="panel">
             <h3 class="panel-title">Vessel Position</h3>
             <div id="map-view" class="placeholder-content">
-                <span>[Vehicle Position Map Interface]</span>
+                <!-- Map will be injected here -->
             </div>
         </div>
 
@@ -229,8 +278,8 @@
 
         <!-- 5. Status Bar (Bottom Left) -->
         <div id="status-bar" class="panel">
-            <h2>EXEMPLARY vessel title</h2>
-            <div id="timer">14:59</div>
+            <h2 id="vessel-title-display">Awaiting Vessel...</h2>
+            <div id="timer">--:--</div>
             <p>Seconds until safety gate</p>
         </div>
 

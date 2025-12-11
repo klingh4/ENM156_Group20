@@ -198,7 +198,7 @@ html, body {
 }
 
 /* --- Entrance animations --- */
-body > * {
+body > .grid-container > * {
     animation-name: slideUpFade;
     animation-duration: 1s;
 }
@@ -353,4 +353,73 @@ body > * {
 .leaflet-control-zoom-out,
 .leaflet-control-attribution {
   filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+}
+
+/* --- Modal Styles --- */
+dialog.modal-overlay {
+    margin: auto;
+    padding: 0;
+    background: transparent;
+    border: none;
+    width: 400px;
+    max-width: 90vw;
+}
+
+dialog.modal-overlay::backdrop {
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background-color: #1F2937;
+    color: #E0E0E0;
+    padding: 24px;
+    border-radius: 8px;
+    border: 1px solid #374151;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.form-group {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: #9CA3AF;
+}
+
+.form-group input {
+    background-color: #111827;
+    border: 1px solid #374151;
+    border-radius: 4px;
+    padding: 10px 12px;
+    color: #F9FAFB;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+    border-color: #38BDF8;
+}
+
+.form-actions {
+    margin-top: 24px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+#btn-start-session {
+    width: 100%;
+    background-color: #38BDF8;
+    color: #111827;
+    border: none;
+}
+
+#btn-start-session:hover {
+    background-color: #0EA5E9;
 }
