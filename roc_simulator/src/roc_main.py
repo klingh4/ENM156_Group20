@@ -3,6 +3,7 @@
 import argparse
 
 from ship_monitor import ShipTelemetryMonitor
+from roc_controller import ROCController
 from roc_gui import RocGui
 
 def main():
@@ -12,8 +13,11 @@ def main():
                         help="ROC id")
     args = parser.parse_args()
 
+    # Hard code vessel for now...
+    roc_controller = ROCController(args.roc, "MASS_0")
+
     # Initialize GUI
-    gui = RocGui(args.roc)
+    gui = RocGui(roc_controller)
 
     # Add extra callbacks to update GUI components from telemetry monitor
     callbacks = {}

@@ -14,10 +14,12 @@ MAP_WIDGET_UPDATE_CAP = 5
 # GUI start
 # -------------------------------------------------------
 class RocGui:
-    def __init__(self, roc_id):
-        self.roc_id = roc_id
-        self.roc_id_num = int(roc_id[-1])
-        self.roc_location = {"ROC_1": "Vaasa", "ROC_2": "Umeå"}[roc_id]
+    def __init__(self, roc_controller):
+        self.roc_controller = roc_controller
+        self.roc_id = roc_controller.roc_id
+        self.roc_id_num = int(self.roc_id[-1])
+        self.roc_location = {"ROC_1": "Vaasa", "ROC_2": "Umeå"}[self.roc_id]
+        self.vessel = roc_controller.vessel
 
         root = tk.Tk()
         root.title("Vessel Readiness Panel – Interactive")
@@ -103,12 +105,13 @@ class RocGui:
 
         sog_entry = tk.Entry(frame_control)
         sog_entry.grid(row=2, column=0, columnspan=2, sticky="ew", pady=2)
-        sog_button = tk.Button(frame_control, text="Set new SOG")
+        sog_button = tk.Button(frame_control, text="Set new SOG", command=self.send_sog)
         sog_button.grid(row=2, column=2, sticky="ew", padx=(5, 0))
 
+        self.sog_entry = sog_entry
         self.sog_label = sog_label
 
-        halt_button = tk.Button(frame_control, text="Halt vessel", fg="red")
+        halt_button = tk.Button(frame_control, text="Halt vessel", fg="red", command=self.halt_vessel)
         halt_button.grid(row=3, column=2, sticky="ew", pady=5)
 
         # Separator
@@ -130,9 +133,10 @@ class RocGui:
 
         cog_entry = tk.Entry(frame_control)
         cog_entry.grid(row=7, column=0, columnspan=2, sticky="ew", pady=2)
-        cog_button = tk.Button(frame_control, text="Set new COG")
+        cog_button = tk.Button(frame_control, text="Set new COG", command=self.send_cog)
         cog_button.grid(row=7, column=2, sticky="ew", padx=(5, 0))
 
+        self.cog_entry = cog_entry
         self.cog_label = cog_label
 
         # Separator
@@ -161,7 +165,7 @@ class RocGui:
         verify_button = tk.Button(frame_control, text="Verify and send checklist")
         verify_button.grid(row=12, column=0, columnspan=3, sticky="ew", pady=2)
 
-        relinquish_button = tk.Button(frame_control, text="Relinquish control")
+        relinquish_button = tk.Button(frame_control, text="Relinquish control", command=self.relinquish)
         relinquish_button.grid(row=13, column=0, columnspan=3, sticky="ew", pady=5)
 
         # --- Vessel Information Frame ---
@@ -279,22 +283,30 @@ class RocGui:
         self.root.quit()
         self.root.destroy()
 
-    def send_cog(self, cog):
-        print(f"(Placeholder) Send COG: {cog}")
+    def relinquish(self):
+        self.roc_controller.send_relinquish()
 
-    def send_sog(self, sog):
-        print(f"(Placeholder) Send SOG: {sog}")
+    def send_cog(self):
+        # TODO: validate data
+        cog = self.cog_entry.get()
+        self.cog_entry.delete(0, tk.END)
+        self.roc_controller.send_cog(cog)
+
+    def send_sog(self):
+        # TODO: validate data
+        sog = self.sog_entry.get()
+        self.sog_entry.delete(0, tk.END)
+        self.roc_controller.send_sog(sog)
+
+    def halt_vessel(self):
+        print("\n!!! HALT BUTTON PRESSED !!!")
+        self.roc_controller.send_sog(0)
 
     def print_check_status(self):
         print("\n--- CHECKLIST STATUS ---")
         for item, var in self.check_vars:
             print(f"{item}: {'✓' if var.get() else '✗'}")
         print("-------------------------\n")
-
-    def handle_abort(self):
-        """Handle abort button - stop the vessel"""
-        print("\n!!! ABORT BUTTON PRESSED !!!")
-        self.send_sog(0)
 
     # Setup GUI callbacks for ship updates
     def update_cog_out(self, value):
