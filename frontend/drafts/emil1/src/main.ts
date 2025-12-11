@@ -77,7 +77,7 @@ setupRocForm.addEventListener("submit", (event) => {
     if (thisRocId) {
 // Setup This ROC
         setThisRoc(new ROC(thisRocId));
-        document.title = `${thisRoc.id} Dashboard`;
+        document.title = thisRoc.id;
         console.log(`Initialized: This ROC=${thisRoc.id}`);
 
         // Close setup dialog and open configuration dialog
@@ -115,13 +115,10 @@ configHandoverForm.addEventListener("submit", async (event) => {
             gateId,
             vesselId,
             originalRoc,
-            receivingRoc
+            receivingRoc,
+            true,  // linkButtons
+            true   // linkTimer
         );
-
-        const timeElem = document.getElementById("timer")
-        if (timeElem) {
-            handover.timerElement = timeElem;
-        }
 
         // Close dialog
         configHandoverDialog.close();
