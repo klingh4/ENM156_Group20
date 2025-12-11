@@ -142,9 +142,11 @@ class ShipTelemetryMonitor:
                 self.extra_callbacks['handle_nav_status'](self.nav_status)
 
     def _handle_roc_status(self, sample):
-        roc_status = self._decode(sample, ROCStatus)
-        if 'handle_roc_status' in self.extra_callbacks:
-            self.extra_callbacks['handle_roc_status'](self.roc_status)
+        msg = self._decode(sample, ROCStatus)
+        if msg:
+            self.roc_status = msg
+            if 'handle_roc_status' in self.extra_callbacks:
+                self.extra_callbacks['handle_roc_status'](self.roc_status)
 
     def _handle_remote_status(self, sample):
         try:

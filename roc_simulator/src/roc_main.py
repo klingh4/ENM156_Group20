@@ -27,6 +27,7 @@ def main():
     callbacks['handle_name'] = gui.update_vessel_name
     callbacks['handle_remote_status'] = gui.update_remote_status
     callbacks['handle_remote_time'] = gui.update_remote_time
+    callbacks['handle_roc_status'] = gui.update_roc_status
 
     # Initialize telemetry monitor with added callbacks to GUI
     monitor = ShipTelemetryMonitor("MASS_0", callbacks)

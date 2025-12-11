@@ -91,6 +91,13 @@ class RocGui:
         frame_control.columnconfigure(1, weight=1)
         frame_control.columnconfigure(2, weight=1)
 
+        # TODO: rework after we're able to get has_priority from the status as well
+        #tk.Label(frame_control, text="ROC status:", anchor="w").grid(row=16, column=0, sticky="w")
+        #roc_status_label = tk.Label(frame_control, text="N/A", anchor="w")
+        #roc_status_label.grid(row=16, column=1, sticky="w")
+
+        #self.roc_status_label = roc_status_label
+
 
         # -------------------------
         # Section: Speed over ground
@@ -314,6 +321,11 @@ class RocGui:
 
     def update_sog_out(self, value):
         self.sog_label.config(text=f"{value:.2f}")
+
+    def update_roc_status(self, value):
+        # TODO: fix when we can get has_priority as well
+        # self.roc_status_label.config(text=value)
+        pass
 
     def update_remote_status(self, value):
         self.vessel_status_label.config(text=value)
