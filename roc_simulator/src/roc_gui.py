@@ -118,12 +118,12 @@ class RocGui:
         # -------------------------
         # Section: Speed over ground
         # -------------------------
-        tk.Label(frame_control, text="Speed over ground", font=("Arial", 10, "bold")).grid(
+        tk.Label(frame_control, text="Speed over ground", font=value_font).grid(
             row=3, column=0, columnspan=3, sticky="w", pady=(0, 5)
         )
 
-        tk.Label(frame_control, text="Current SOG:", anchor="w").grid(row=4, column=0, sticky="w")
-        sog_label = tk.Label(frame_control, text="N/A", anchor="w")
+        tk.Label(frame_control, text="Current SOG:", anchor="w", font=label_font).grid(row=4, column=0, sticky="w")
+        sog_label = tk.Label(frame_control, text="N/A", anchor="w", font=value_font)
         sog_label.grid(row=4, column=1, sticky="w")
 
         sog_entry = tk.Entry(frame_control)
@@ -153,8 +153,8 @@ class RocGui:
             row=8, column=0, columnspan=3, sticky="w", pady=(0, 5)
         )
 
-        tk.Label(frame_control, text="Current COG:", anchor="w").grid(row=9, column=0, sticky="w")
-        cog_label = tk.Label(frame_control, text="N/A", anchor="w")
+        tk.Label(frame_control, text="Current COG:", anchor="w", font=label_font).grid(row=9, column=0, sticky="w")
+        cog_label = tk.Label(frame_control, text="N/A", anchor="w", font=value_font)
         cog_label.grid(row=9, column=1, sticky="w")
 
         cog_entry = tk.Entry(frame_control)
@@ -175,18 +175,18 @@ class RocGui:
         # -------------------------
         # Section: ROC handover
         # -------------------------
-        tk.Label(frame_control, text="ROC handover", font=("Arial", 10, "bold")).grid(
+        tk.Label(frame_control, text="ROC handover", font=value_font).grid(
             row=12, column=0, columnspan=3, sticky="w", pady=(0, 5)
         )
 
-        tk.Label(frame_control, text="Time until safety gate:", anchor="w").grid(row=13, column=0, sticky="w")
-        time_until_label = tk.Label(frame_control, text="N/A", anchor="w")
+        tk.Label(frame_control, text="Time until safety gate:", anchor="w", font=label_font).grid(row=13, column=0, sticky="w")
+        time_until_label = tk.Label(frame_control, text="N/A", anchor="w", font=value_font)
         time_until_label.grid(row=13, column=1, sticky="w")
 
         self.time_until_label = time_until_label
 
-        tk.Label(frame_control, text="Handover status:", anchor="w").grid(row=14, column=0, sticky="w")
-        handover_status_label = tk.Label(frame_control, text="N/A", anchor="w")
+        tk.Label(frame_control, text="Handover status:", anchor="w", font=label_font).grid(row=14, column=0, sticky="w")
+        handover_status_label = tk.Label(frame_control, text="N/A", anchor="w", font=value_font)
         handover_status_label.grid(row=14, column=1, sticky="w")
 
         verify_button = tk.Button(frame_control, text="Verify and send checklist")
