@@ -48,9 +48,9 @@ class RocGui:
         self.map_widget = map_widget
         self.map_widget_last_updated_time = 0
 
-        ## -------------------------------------------------------
-        ## Visualisation area with Zenoh controls
-        ## -------------------------------------------------------
+        # -------------------------------------------------------
+        # Visualisation area with Zenoh controls
+        # -------------------------------------------------------
         frame_visual = tk.LabelFrame(root, text="Visualization / Data Modules")
         frame_visual.grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
 
