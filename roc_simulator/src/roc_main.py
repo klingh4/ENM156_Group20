@@ -25,6 +25,8 @@ def main():
     callbacks['handle_cog'] = gui.update_cog_out
     callbacks['handle_sog'] = gui.update_sog_out
     callbacks['handle_name'] = gui.update_vessel_name
+    callbacks['handle_mmsi'] = gui.update_mmsi
+    callbacks['handle_imo'] = gui.update_imo
     callbacks['handle_remote_status'] = gui.update_remote_status
     callbacks['handle_remote_time'] = gui.update_remote_time
     callbacks['handle_roc_status'] = gui.update_roc_status

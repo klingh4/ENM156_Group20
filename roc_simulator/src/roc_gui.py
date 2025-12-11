@@ -189,7 +189,7 @@ class RocGui:
         handover_status_label = tk.Label(frame_control, text="N/A", anchor="w", font=value_font)
         handover_status_label.grid(row=14, column=1, sticky="w")
 
-        verify_button = tk.Button(frame_control, text="Verify and send checklist")
+        verify_button = tk.Button(frame_control, text="Verify and send checklist (not implemented yet)", state="disabled")
         verify_button.grid(row=15, column=0, columnspan=3, sticky="ew", pady=2)
 
         self.verify_button = verify_button
@@ -217,26 +217,44 @@ class RocGui:
 
         self.vessel_id_label = vessel_id_label
 
+        # MMSI
+        tk.Label(frame_vessel_info, text="MMSI:", font=label_font, anchor="w").grid(
+            row=1, column=0, sticky="w"
+        )
+        mmsi_label = tk.Label(frame_vessel_info, text="N/A", font=value_font, anchor="w")
+        mmsi_label.grid(row=1, column=1, sticky="w")
+
+        self.mmsi_label = mmsi_label
+
+        # IMO
+        tk.Label(frame_vessel_info, text="IMO:", font=label_font, anchor="w").grid(
+            row=2, column=0, sticky="w"
+        )
+        imo_label = tk.Label(frame_vessel_info, text="N/A", font=value_font, anchor="w")
+        imo_label.grid(row=2, column=1, sticky="w")
+
+        self.imo_label = imo_label
+
         # Separator
         ttk.Separator(frame_vessel_info, orient="horizontal").grid(
-            row=2, column=0, sticky="ew", pady=10
+            row=3, column=0, sticky="ew", pady=10
         )
 
         # Latitude
         tk.Label(frame_vessel_info, text="Current latitude:", font=label_font, anchor="w").grid(
-            row=3, column=0, sticky="w"
+            row=4, column=0, sticky="w"
         )
         lat_label = tk.Label(frame_vessel_info, text="N/A", font=value_font, anchor="w")
-        lat_label.grid(row=3, column=1, sticky="w")
+        lat_label.grid(row=4, column=1, sticky="w")
 
         self.lat_label = lat_label
 
         # Longitude
         tk.Label(frame_vessel_info, text="Current longitude:", font=label_font, anchor="w").grid(
-            row=4, column=0, sticky="w"
+            row=5, column=0, sticky="w"
         )
         lon_label = tk.Label(frame_vessel_info, text="N/A", font=value_font, anchor="w")
-        lon_label.grid(row=4, column=1, sticky="w")
+        lon_label.grid(row=5, column=1, sticky="w")
 
         self.lon_label = lon_label
 
@@ -301,7 +319,7 @@ class RocGui:
     def conditionally_enable_elements(self):
         for element in [
             self.sog_button, self.sog_entry, self.cog_button, self.cog_entry,
-            self.halt_button, self.verify_button, self.relinquish_button
+            self.halt_button, self.relinquish_button, # self.verify_button
         ]:
             if self.roc_id == self.controlling_roc:
                 element.config(state="normal")
@@ -352,6 +370,12 @@ class RocGui:
         # TODO: fix when we can get has_priority as well
         # self.roc_status_label.config(text=value)
         pass
+
+    def update_mmsi(self, value):
+        self.mmsi_label.config(text=value)
+
+    def update_imo(self, value):
+        self.imo_label.config(text=value)
 
     def update_remote_status(self, value):
         self.vessel_status_label.config(text=value)
