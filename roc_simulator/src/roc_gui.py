@@ -20,6 +20,8 @@ class RocGui:
         self.roc_id_num = int(self.roc_id[-1])
         self.roc_location = {"ROC_1": "Vaasa", "ROC_2": "Umeå"}[self.roc_id]
         self.vessel = roc_controller.vessel
+        # Hack !! TODO: listen to vessel when it supports this
+        self.controlling_roc = "ROC_1"
 
         root = tk.Tk()
         root.title("Vessel Readiness Panel – Interactive")
@@ -36,6 +38,8 @@ class RocGui:
         root.protocol("WM_DELETE_WINDOW", self.on_close)
 
         ## First column
+        label_font = ("Arial", 10)
+        value_font = ("Arial", 10, "bold")
 
         # -------------------------------------------------------
         # VEHICLE MAP PANEL (live-map)
@@ -67,8 +71,8 @@ class RocGui:
         frame_roc.columnconfigure(1, weight=3, pad=5)
 
         # ROC identifier row
-        tk.Label(frame_roc, text="ROC identifier:", font=("Arial", 12), anchor="w").grid(row=0, column=0, sticky="w")
-        roc_id_label = tk.Label(frame_roc, text=self.roc_id, font=("Arial", 12, "bold"), anchor="w")
+        tk.Label(frame_roc, text="ROC identifier:", font=label_font, anchor="w").grid(row=0, column=0, sticky="w")
+        roc_id_label = tk.Label(frame_roc, text=self.roc_id, font=value_font, anchor="w")
         roc_id_label.grid(row=0, column=1, sticky="w")
 
         # Separator
@@ -77,8 +81,8 @@ class RocGui:
         )
 
         # ROC location row
-        tk.Label(frame_roc, text="ROC location:", font=("Arial", 12), anchor="w").grid(row=2, column=0, sticky="w")
-        roc_location_label = tk.Label(frame_roc, text=self.roc_location, font=("Arial", 12, "bold"), anchor="w")
+        tk.Label(frame_roc, text="ROC location:", font=label_font, anchor="w").grid(row=2, column=0, sticky="w")
+        roc_location_label = tk.Label(frame_roc, text=self.roc_location, font=value_font, anchor="w")
         roc_location_label.grid(row=2, column=1, sticky="w")
 
         ## Second column
@@ -92,63 +96,79 @@ class RocGui:
         frame_control.columnconfigure(2, weight=1)
 
         # TODO: rework after we're able to get has_priority from the status as well
-        #tk.Label(frame_control, text="ROC status:", anchor="w").grid(row=16, column=0, sticky="w")
-        #roc_status_label = tk.Label(frame_control, text="N/A", anchor="w")
-        #roc_status_label.grid(row=16, column=1, sticky="w")
+        tk.Label(frame_control, text="Controlling ROC:", anchor="w", font=label_font).grid(row=0, column=0, sticky="w")
+        roc_status_label = tk.Label(frame_control, text=self.controlling_roc, anchor="w", font=value_font)
+        roc_status_label.grid(row=0, column=1, sticky="w")
 
-        #self.roc_status_label = roc_status_label
+        self.roc_status_label = roc_status_label
 
+        tk.Label(frame_control, text="Vessel status:", font=label_font, anchor="w").grid(
+            row=1, column=0, sticky="w"
+        )
+        vessel_status_label = tk.Label(frame_control, text="N/A", font=value_font, anchor="w")
+        vessel_status_label.grid(row=1, column=1, sticky="w")
+
+        self.vessel_status_label = vessel_status_label
+
+        # Separator
+        ttk.Separator(frame_control, orient="horizontal").grid(
+            row=2, column=0, columnspan=3, sticky="ew", pady=10
+        )
 
         # -------------------------
         # Section: Speed over ground
         # -------------------------
         tk.Label(frame_control, text="Speed over ground", font=("Arial", 10, "bold")).grid(
-            row=0, column=0, columnspan=3, sticky="w", pady=(0, 5)
+            row=3, column=0, columnspan=3, sticky="w", pady=(0, 5)
         )
 
-        tk.Label(frame_control, text="Current SOG:", anchor="w").grid(row=1, column=0, sticky="w")
+        tk.Label(frame_control, text="Current SOG:", anchor="w").grid(row=4, column=0, sticky="w")
         sog_label = tk.Label(frame_control, text="N/A", anchor="w")
-        sog_label.grid(row=1, column=1, sticky="w")
+        sog_label.grid(row=4, column=1, sticky="w")
 
         sog_entry = tk.Entry(frame_control)
-        sog_entry.grid(row=2, column=0, columnspan=2, sticky="ew", pady=2)
+        sog_entry.grid(row=5, column=0, columnspan=2, sticky="ew", pady=2)
         sog_button = tk.Button(frame_control, text="Set new SOG", command=self.send_sog)
-        sog_button.grid(row=2, column=2, sticky="ew", padx=(5, 0))
+        sog_button.grid(row=5, column=2, sticky="ew", padx=(5, 0))
 
+        self.sog_button = sog_button
         self.sog_entry = sog_entry
         self.sog_label = sog_label
 
         halt_button = tk.Button(frame_control, text="Halt vessel", fg="red", command=self.halt_vessel)
-        halt_button.grid(row=3, column=2, sticky="ew", pady=5)
+        halt_button.grid(row=6, column=2, sticky="ew", pady=5)
+
+        self.halt_button = halt_button
 
         # Separator
         ttk.Separator(frame_control, orient="horizontal").grid(
-            row=4, column=0, columnspan=3, sticky="ew", pady=10
+            row=7, column=0, columnspan=3, sticky="ew", pady=10
         )
 
 
         # -------------------------
         # Section: Course over ground
         # -------------------------
-        tk.Label(frame_control, text="Course over ground", font=("Arial", 10, "bold")).grid(
-            row=5, column=0, columnspan=3, sticky="w", pady=(0, 5)
+        tk.Label(frame_control, text="Course over ground", font=value_font).grid(
+            row=8, column=0, columnspan=3, sticky="w", pady=(0, 5)
         )
 
-        tk.Label(frame_control, text="Current COG:", anchor="w").grid(row=6, column=0, sticky="w")
+        tk.Label(frame_control, text="Current COG:", anchor="w").grid(row=9, column=0, sticky="w")
         cog_label = tk.Label(frame_control, text="N/A", anchor="w")
-        cog_label.grid(row=6, column=1, sticky="w")
+        cog_label.grid(row=9, column=1, sticky="w")
 
         cog_entry = tk.Entry(frame_control)
-        cog_entry.grid(row=7, column=0, columnspan=2, sticky="ew", pady=2)
+        cog_entry.grid(row=10, column=0, columnspan=2, sticky="ew", pady=2)
         cog_button = tk.Button(frame_control, text="Set new COG", command=self.send_cog)
-        cog_button.grid(row=7, column=2, sticky="ew", padx=(5, 0))
+        cog_button.grid(row=10, column=2, sticky="ew", padx=(5, 0))
 
+        self.cog_button = cog_button
         self.cog_entry = cog_entry
         self.cog_label = cog_label
 
         # Separator
         ttk.Separator(frame_control, orient="horizontal").grid(
-            row=8, column=0, columnspan=3, sticky="ew", pady=10
+            row=11, column=0, columnspan=3, sticky="ew", pady=10
         )
 
 
@@ -156,24 +176,29 @@ class RocGui:
         # Section: ROC handover
         # -------------------------
         tk.Label(frame_control, text="ROC handover", font=("Arial", 10, "bold")).grid(
-            row=9, column=0, columnspan=3, sticky="w", pady=(0, 5)
+            row=12, column=0, columnspan=3, sticky="w", pady=(0, 5)
         )
 
-        tk.Label(frame_control, text="Time until safety gate:", anchor="w").grid(row=10, column=0, sticky="w")
+        tk.Label(frame_control, text="Time until safety gate:", anchor="w").grid(row=13, column=0, sticky="w")
         time_until_label = tk.Label(frame_control, text="N/A", anchor="w")
-        time_until_label.grid(row=10, column=1, sticky="w")
+        time_until_label.grid(row=13, column=1, sticky="w")
 
         self.time_until_label = time_until_label
 
-        tk.Label(frame_control, text="Handover status:", anchor="w").grid(row=11, column=0, sticky="w")
+        tk.Label(frame_control, text="Handover status:", anchor="w").grid(row=14, column=0, sticky="w")
         handover_status_label = tk.Label(frame_control, text="N/A", anchor="w")
-        handover_status_label.grid(row=11, column=1, sticky="w")
+        handover_status_label.grid(row=14, column=1, sticky="w")
 
         verify_button = tk.Button(frame_control, text="Verify and send checklist")
-        verify_button.grid(row=12, column=0, columnspan=3, sticky="ew", pady=2)
+        verify_button.grid(row=15, column=0, columnspan=3, sticky="ew", pady=2)
+
+        self.verify_button = verify_button
 
         relinquish_button = tk.Button(frame_control, text="Relinquish control", command=self.relinquish)
-        relinquish_button.grid(row=13, column=0, columnspan=3, sticky="ew", pady=5)
+        relinquish_button.grid(row=16, column=0, columnspan=3, sticky="ew", pady=5)
+
+        self.relinquish_button = relinquish_button
+
 
         # --- Vessel Information Frame ---
         frame_vessel_info = tk.LabelFrame(root, text="Vessel information", padx=10, pady=10)
@@ -183,9 +208,6 @@ class RocGui:
         frame_vessel_info.columnconfigure(0, weight=1)
         frame_vessel_info.columnconfigure(1, weight=2)
 
-        label_font = ("Arial", 12)
-        value_font = ("Arial", 12, "bold")
-
         # --- Vessel identifier ---
         tk.Label(frame_vessel_info, text="Vessel identifier:", font=label_font, anchor="w").grid(
             row=0, column=0, sticky="w"
@@ -194,14 +216,6 @@ class RocGui:
         vessel_id_label.grid(row=0, column=1, sticky="w")
 
         self.vessel_id_label = vessel_id_label
-
-        tk.Label(frame_vessel_info, text="Vessel status:", font=label_font, anchor="w").grid(
-            row=1, column=0, sticky="w"
-        )
-        vessel_status_label = tk.Label(frame_vessel_info, text="N/A", font=value_font, anchor="w")
-        vessel_status_label.grid(row=1, column=1, sticky="w")
-
-        self.vessel_status_label = vessel_status_label
 
         # Separator
         ttk.Separator(frame_vessel_info, orient="horizontal").grid(
@@ -273,6 +287,8 @@ class RocGui:
         notes_field = ScrolledText(frame_notes, height=5)
         notes_field.pack(expand=True, fill="both")
 
+        self.conditionally_enable_elements()
+
         # Bit of an ugly hack - but if we get handed this we can properly close
         # the zenoh session and thus properly exit on closing the window.
         self.monitor = None
@@ -281,6 +297,16 @@ class RocGui:
 
     def mainloop(self):
         self.root.mainloop()
+
+    def conditionally_enable_elements(self):
+        for element in [
+            self.sog_button, self.sog_entry, self.cog_button, self.cog_entry,
+            self.halt_button, self.verify_button, self.relinquish_button
+        ]:
+            if self.roc_id == self.controlling_roc:
+                element.config(state="normal")
+            else:
+                element.config(state="disabled")
 
     def on_close(self):
         # Close zenoh session properly at exit
