@@ -81,21 +81,9 @@ export async function EstablishHandoverCommunication(thisRocId: ROCIdent, handov
         handler: (sample: Sample) => handover.receivedAssertion(sample)
     });
 
-    // Link buttons to functions
-    const readyBtn = document.getElementById("btn-ready");
-    if (readyBtn) {
-        readyBtn.removeEventListener("click", pubAssertReady);
-        readyBtn.addEventListener("click", pubAssertReady);
-    }
-    const abortBtn = document.getElementById("btn-abort");
-    if (abortBtn) {
-        abortBtn.removeEventListener("click", pubAbortHandover);
-        abortBtn.addEventListener("click", pubAbortHandover);
-    }
-
     // Subscribe to time updates
     await session.declareSubscriber(`rise/@v0/${handover.vesselId}/pubsub/remote_time/bridge/1`, {
-        handler: (sample: Sample) => handover.updateTimeToGate((parseFloat(sample.payload().toString())))
+        handler: (sample: Sample) => handover.secondsUntilSafetyGate = (parseFloat(sample.payload().toString()))
     });
 
 
@@ -126,8 +114,6 @@ export async function EstablishHandoverCommunication(thisRocId: ROCIdent, handov
 
 export async function pubAssertReady() {
     if (assertionPublisher) {
-        console.log("ASSERTING READY...");
-        thisRoc.readiness = Readiness.READY;
         await assertionPublisher.put("READY");
     } else {
         console.error("Assertion publisher not established yet!");
@@ -136,8 +122,6 @@ export async function pubAssertReady() {
 
 export async function pubAbortHandover() {
     if (assertionPublisher) {
-        console.log("ABORTING HANDOVER...");
-        thisRoc.readiness = Readiness.ABORTED;
         await assertionPublisher.put("ABORT");
     } else {
         console.error("Assertion publisher not established yet!");

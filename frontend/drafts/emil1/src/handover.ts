@@ -1,11 +1,11 @@
 import type { Sample } from "node_modules/@eclipse-zenoh/zenoh-ts/dist/sample";
 import { type VesselIdent, ROC, Readiness, type ROCIdent, thisRoc } from "./roc";
-import { publishRelinquish, publishTakeover } from "./zenoh-interfacer";
+import { pubAbortHandover, pubAssertReady, publishRelinquish, publishTakeover } from "./zenoh-interfacer";
 
 export type SafetyGateIdent = string;
 
 export class Handover {
-    secondsUntilSafetyGate: number | undefined;
+    #secondsUntilSafetyGate: number | undefined;
     gateId: SafetyGateIdent;
     vesselId: VesselIdent;
     hasVesselRequestedHandover: boolean = false;
@@ -17,16 +17,20 @@ export class Handover {
 
     public set hasVesselRequestedHandoverValue(value: boolean) {
         this.hasVesselRequestedHandover = value;
-        if (value) {
-            setInterval(this.performHandoverIfAppropriate.bind(this), 1000);
-        }
     }
 
-    constructor(gate: SafetyGateIdent, vessel: VesselIdent, originallyResponsible: ROC, receivingResponsibility: ROC) {
+    constructor(gate: SafetyGateIdent
+        , vessel: VesselIdent
+        , originallyResponsible: ROC
+        , receivingResponsibility: ROC
+        , linkButtons: boolean = false
+        , linkTimer: boolean = false) {
         this.gateId = gate;
         this.vesselId = vessel;
         this.originallyResponsible = originallyResponsible;
         this.receivingResponsibility = receivingResponsibility;
+        if (linkButtons) { this.linkControlButtons(); }
+        if (linkTimer) { this.linkTimerElement(); }
     }
 
     areBothReady(): boolean {
@@ -54,14 +58,18 @@ export class Handover {
         }
     }
 
-    updateTimeToGate(seconds: number) {
+    public set secondsUntilSafetyGate(seconds: number) {
         if (isNaN(seconds)) {
             return;
         }
-        this.secondsUntilSafetyGate = seconds;
+        this.#secondsUntilSafetyGate = seconds;
         if (this.timerElement) {
             this.timerElement.innerText = seconds.toFixed(1);
         }
+    }
+
+    public get secondsUntilSafetyGate(): number | undefined {
+        return this.#secondsUntilSafetyGate;
     }
 
     async receivedAssertion(sample: Sample) {
@@ -124,8 +132,42 @@ export class Handover {
 
     #playRoleAsReceivingResponsibility() {
         console.log("Playing role as receiving responsibility ROC...");
-        setInterval(() => {
+        this.takeoverIntervalId = setInterval(() => {
             publishTakeover();
         }, 1000);
+    }
+
+    linkTimerElement() {
+        const timeElem = document.getElementById("timer")
+        if (timeElem) {
+            this.timerElement = timeElem;
+        }
+    }
+
+    // Link buttons to functions
+    linkControlButtons() {
+        const readyBtn = document.getElementById("btn-ready");
+        if (readyBtn) {
+            readyBtn.removeEventListener("click", this.assertReady.bind(this));
+            readyBtn.addEventListener("click", this.assertReady.bind(this));
+        }
+        const abortBtn = document.getElementById("btn-abort");
+        if (abortBtn) {
+            abortBtn.removeEventListener("click", this.abortHandover.bind(this));
+            abortBtn.addEventListener("click", this.abortHandover.bind(this));
+        }
+    }
+
+    assertReady() {
+        console.log("ASSERTING READY...");
+        thisRoc.readiness = Readiness.READY;
+        pubAssertReady();
+        this.performHandoverIfAppropriate();
+    }
+
+    abortHandover() {
+        console.log("ABORTING HANDOVER...");
+        thisRoc.readiness = Readiness.ABORTED;
+        pubAbortHandover();
     }
 }
