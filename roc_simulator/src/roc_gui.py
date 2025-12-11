@@ -390,12 +390,12 @@ class RocGui:
     # Setup GUI callbacks for ship updates
     def on_handover_request(self, value):
         self.handover_state = HANDOVER_STATE_READY
-        self.handover_status_label.config(text=value)
+        self.handover_status_label.config(text=value[:25] + "...")
         self.conditionally_enable_elements()
 
     def on_handover_state(self, value):
         self.handover_state = HANDOVER_STATE_COMPLETED
-        self.handover_status_label.config(text=value)
+        self.handover_status_label.config(text=value[:25] + "...")
 
         # AWFUL HACK (but quick)
         priority_roc = "ROC_2" if "new_priority=ROC_2" in value else "ROC_1"
