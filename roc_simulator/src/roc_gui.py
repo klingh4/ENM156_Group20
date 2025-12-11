@@ -29,6 +29,8 @@ class RocGui:
         # Should exit main loop on closing window
         root.protocol("WM_DELETE_WINDOW", self.on_close)
 
+        ## First column
+
         # -------------------------------------------------------
         # VEHICLE MAP PANEL (live-map)
         # -------------------------------------------------------
@@ -67,6 +69,8 @@ class RocGui:
         tk.Label(frame_roc, text="ROC location:", font=("Arial", 12), anchor="w").grid(row=1, column=0, sticky="w")
         roc_location_label = tk.Label(frame_roc, text="Vaasa", font=("Arial", 12, "bold"), anchor="w")
         roc_location_label.grid(row=1, column=1, sticky="w")
+
+        ## Second column
 
         # -------------------------------------------------------
         # Visualisation area with Zenoh controls
@@ -130,6 +134,8 @@ class RocGui:
         state_label.grid(row=9, column=1, sticky="w", pady=5)
 
         self.state_label = state_label
+
+        ## Third column
 
         # -------------------------------------------------------
         # INTERACTIVE CHECKLIST
@@ -196,28 +202,28 @@ class RocGui:
         # -------------------------------------------------------
         # BOTTOM BUTTONS
         # -------------------------------------------------------
-        frame_buttons = tk.Frame(root)
-        frame_buttons.grid(row=2, column=0, columnspan=2, pady=20)
+        #frame_buttons = tk.Frame(root)
+        #frame_buttons.grid(row=2, column=0, columnspan=2, pady=20)
 
-        btn_ready = tk.Button(
-            frame_buttons,
-            text="ASSERT READY",
-            font=("Arial", 22),
-            width=15,
-            bg="green",
-            command=self.print_check_status
-        )
-        btn_ready.grid(row=0, column=0, padx=40)
+        #btn_ready = tk.Button(
+        #    frame_buttons,
+        #    text="ASSERT READY",
+        #    font=("Arial", 22),
+        #    width=15,
+        #    bg="green",
+        #    command=self.print_check_status
+        #)
+        #btn_ready.grid(row=0, column=0, padx=40)
 
-        btn_abort = tk.Button(
-            frame_buttons,
-            text="ABORT",
-            font=("Arial", 22),
-            width=15,
-            bg="red",
-            command=self.handle_abort
-        )
-        btn_abort.grid(row=0, column=1, padx=40)
+        #btn_abort = tk.Button(
+        #    frame_buttons,
+        #    text="ABORT",
+        #    font=("Arial", 22),
+        #    width=15,
+        #    bg="red",
+        #    command=self.handle_abort
+        #)
+        #btn_abort.grid(row=0, column=1, padx=40)
 
         # Bit of an ugly hack - but if we get handed this we can properly close
         # the zenoh session and thus properly exit on closing the window.
