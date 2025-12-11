@@ -37,8 +37,10 @@ class RocGui:
 
         map_widget = TkinterMapView(frame_map, width=600, height=500, corner_radius=0)
         map_widget.set_position(59.3293, 18.0686)  # Stockholm example
-        map_widget.set_zoom(3)
+        map_widget.set_zoom(4)
         map_widget.pack(expand=True, fill="both")
+        map_widget.set_marker(63.0888, 21.5617, text="ROC Vaasa", marker_color_circle="white", marker_color_outside="cyan")
+        map_widget.set_marker(63.7045, 20.3530, text="ROC Umeå", marker_color_circle="yellow", marker_color_outside="cyan")
 
         self.marker = None
         self.root = root
