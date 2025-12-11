@@ -49,6 +49,26 @@ class RocGui:
         self.map_widget_last_updated_time = 0
 
         # -------------------------------------------------------
+        # ROC info
+        # -------------------------------------------------------
+        frame_roc = tk.LabelFrame(root, text="ROC information", padx=10, pady=10)
+        frame_roc.grid(row=1, column=0, sticky="nsew", padx=5, pady=5)
+
+        # Configure grid inside the frame
+        frame_roc.columnconfigure(0, weight=1, pad=5)
+        frame_roc.columnconfigure(1, weight=3, pad=5)
+
+        # ROC identifier row
+        tk.Label(frame_roc, text="ROC identifier:", font=("Arial", 12), anchor="w").grid(row=0, column=0, sticky="w")
+        roc_id_label = tk.Label(frame_roc, text="ROC_1", font=("Arial", 12, "bold"), anchor="w")
+        roc_id_label.grid(row=0, column=1, sticky="w")
+
+        # ROC location row
+        tk.Label(frame_roc, text="ROC location:", font=("Arial", 12), anchor="w").grid(row=1, column=0, sticky="w")
+        roc_location_label = tk.Label(frame_roc, text="Vaasa", font=("Arial", 12, "bold"), anchor="w")
+        roc_location_label.grid(row=1, column=1, sticky="w")
+
+        # -------------------------------------------------------
         # Visualisation area with Zenoh controls
         # -------------------------------------------------------
         frame_visual = tk.LabelFrame(root, text="Visualization / Data Modules")
@@ -159,8 +179,8 @@ class RocGui:
         # -------------------------------------------------------
         # VEHICLE NAME + TIMER
         # -------------------------------------------------------
-        frame_info = tk.Frame(root)
-        frame_info.grid(row=1, column=0, sticky="nsew")
+        frame_info = tk.Frame(control_frame)
+        frame_info.grid(row=10, column=0, sticky="nsew")
 
         vehicle_label = tk.Label(frame_info, text="Vehicle Name", font=("Arial", 20))
         vehicle_label.pack(pady=10)
