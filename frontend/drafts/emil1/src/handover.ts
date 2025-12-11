@@ -15,6 +15,10 @@ export class Handover {
     handoverInitiated: boolean = false;
     takeoverIntervalId: number | undefined;
 
+    // UI Elements for readiness
+    origRocStatusElem: HTMLElement | null = null;
+    recvRocStatusElem: HTMLElement | null = null;
+
     public set hasVesselRequestedHandoverValue(value: boolean) {
         this.hasVesselRequestedHandover = value;
     }
@@ -31,6 +35,37 @@ export class Handover {
         this.receivingResponsibility = receivingResponsibility;
         if (linkButtons) { this.linkControlButtons(); }
         if (linkTimer) { this.linkTimerElement(); }
+    }
+
+    setUIElements(origStatus: HTMLElement | null, recvStatus: HTMLElement | null, origLabel: HTMLElement | null, recvLabel: HTMLElement | null) {
+        this.origRocStatusElem = origStatus;
+        this.recvRocStatusElem = recvStatus;
+        if (origLabel) origLabel.innerText = `Original (${this.originallyResponsible.id})`;
+        if (recvLabel) recvLabel.innerText = `Receiving (${this.receivingResponsibility.id})`;
+        this.updateReadinessUI();
+    }
+
+    updateReadinessUI() {
+        if (this.origRocStatusElem) this.updateRocBadge(this.origRocStatusElem, this.originallyResponsible.readiness);
+        if (this.recvRocStatusElem) this.updateRocBadge(this.recvRocStatusElem, this.receivingResponsibility.readiness);
+    }
+
+    updateRocBadge(element: HTMLElement, readiness: Readiness) {
+        element.className = 'status-badge'; // Reset classes
+        switch (readiness) {
+            case Readiness.READY:
+                element.classList.add('status-ready');
+                element.innerText = "READY";
+                break;
+            case Readiness.ABORTED:
+                element.classList.add('status-aborted');
+                element.innerText = "ABORTED";
+                break;
+            default:
+                element.classList.add('status-uncertain');
+                element.innerText = "UNCERTAIN";
+                break;
+        }
     }
 
     areBothReady(): boolean {
@@ -95,6 +130,7 @@ export class Handover {
             console.warn("Received unknown assertion: " + assertion);
         }
 
+        this.updateReadinessUI();
         this.performHandoverIfAppropriate();
     }
 
@@ -162,6 +198,7 @@ export class Handover {
         console.log("ASSERTING READY...");
         thisRoc.readiness = Readiness.READY;
         pubAssertReady();
+        this.updateReadinessUI();
         this.performHandoverIfAppropriate();
     }
 
@@ -169,5 +206,6 @@ export class Handover {
         console.log("ABORTING HANDOVER...");
         thisRoc.readiness = Readiness.ABORTED;
         pubAbortHandover();
+        this.updateReadinessUI();
     }
 }

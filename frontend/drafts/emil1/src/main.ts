@@ -1,9 +1,9 @@
 import "./style.css"
-import { StartListeningToVessel, EstablishHandoverCommunication, connectToZenohNetwork, declareStateHandler } from "./zenoh-interfacer"
+import { StartListeningToVessel, EstablishHandoverCommunication, connectToZenohNetwork, declareStateHandler, SubscribeToVesselTime } from "./zenoh-interfacer"
 import { activateRemarkResizing } from "./remark-resizing"
 import { initializeMap } from "./map"
 import { Handover } from "./handover"
-import { ROC, setThisRoc, thisRoc } from "./roc"
+import { ROC, setThisRoc, thisRoc, Readiness } from "./roc"
 import type { Sample } from "@eclipse-zenoh/zenoh-ts"
 
 // Initialize UI elements immediately
@@ -75,7 +75,7 @@ setupRocForm.addEventListener("submit", (event) => {
     const thisRocId = formData.get("thisRocId") as string;
 
     if (thisRocId) {
-// Setup This ROC
+        // Setup This ROC
         setThisRoc(new ROC(thisRocId));
         document.title = thisRoc.id;
         console.log(`Initialized: This ROC=${thisRoc.id}`);
@@ -120,6 +120,25 @@ configHandoverForm.addEventListener("submit", async (event) => {
             true   // linkTimer
         );
 
+        // Setup UI references for status updates
+        handover.setUIElements(
+            document.getElementById("orig-roc-status"),
+            document.getElementById("recv-roc-status"),
+            document.getElementById("status-original-label"),
+            document.getElementById("status-receiving-label")
+        );
+
+        // Update local button listeners to refresh UI
+        const readyBtn = document.getElementById("btn-ready");
+        const abortBtn = document.getElementById("btn-abort");
+
+        if (readyBtn) {
+            readyBtn.addEventListener("click", () => handover.updateReadinessUI());
+        }
+        if (abortBtn) {
+            abortBtn.addEventListener("click", () => handover.updateReadinessUI());
+        }
+
         // Close dialog
         configHandoverDialog.close();
 
@@ -127,6 +146,11 @@ configHandoverForm.addEventListener("submit", async (event) => {
         try {
             await connectToZenohNetwork();
             await StartListeningToVessel(handover.vesselId);
+
+            // Subscribe to time for everyone (participants and observers)
+            await SubscribeToVesselTime(handover.vesselId, (seconds) => {
+                handover.secondsUntilSafetyGate = seconds;
+            });
 
             // Only establish handover communication if this ROC is explicitly involved
             if (thisRoc.id === originalRoc.id || thisRoc.id === receivingRoc.id) {

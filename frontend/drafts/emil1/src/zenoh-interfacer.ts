@@ -59,6 +59,16 @@ export async function StartListeningToVessel(vesselId: VesselIdent) {
         });
 };
 
+export async function SubscribeToVesselTime(vesselId: VesselIdent, handler: (seconds: number) => void) {
+    if (!session) {
+        throw new Error("Zenoh session not established yet!");
+    }
+    // Subscribe to time updates
+    await session.declareSubscriber(`rise/@v0/${vesselId}/pubsub/remote_time/bridge/1`, {
+        handler: (sample: Sample) => handler(parseFloat(sample.payload().toString()))
+    });
+}
+
 export async function EstablishHandoverCommunication(thisRocId: ROCIdent, handover: Handover) {
     if (!session) {
         throw new Error("Zenoh session not established yet!");
@@ -80,12 +90,6 @@ export async function EstablishHandoverCommunication(thisRocId: ROCIdent, handov
     await session.declareSubscriber(`rise/@v0/${otherRoc.id}/pubsub/handover/assertion`, {
         handler: (sample: Sample) => handover.receivedAssertion(sample)
     });
-
-    // Subscribe to time updates
-    await session.declareSubscriber(`rise/@v0/${handover.vesselId}/pubsub/remote_time/bridge/1`, {
-        handler: (sample: Sample) => handover.secondsUntilSafetyGate = (parseFloat(sample.payload().toString()))
-    });
-
 
     // Declare the relinquish publisher
     relinquishPublisher = await session.declarePublisher(`${handover.vesselId}/handover/relinquish`, {
