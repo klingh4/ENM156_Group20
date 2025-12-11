@@ -31,7 +31,7 @@ def main():
     callbacks['handle_remote_time'] = gui.update_remote_time
     callbacks['handle_roc_status'] = gui.update_roc_status
     callbacks['handle_handover_request'] = gui.on_handover_request
-    callbacks['handle_handover_status'] = gui.on_handover_status
+    callbacks['handle_handover_state'] = gui.on_handover_state
 
     # Initialize telemetry monitor with added callbacks to GUI
     monitor = ShipTelemetryMonitor("MASS_0", callbacks)

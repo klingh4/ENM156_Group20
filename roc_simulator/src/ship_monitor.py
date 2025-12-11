@@ -78,8 +78,8 @@ class ShipTelemetryMonitor:
             self._handle_handover_request)
 
         self.session.declare_subscriber(
-            f"{self.base}/{self.ship}/handover/status",
-            self._handle_handover_status)
+            f"{self.base}/{self.ship}/handover/state",
+            self._handle_handover_state)
 
         print(f"{self.__class__.__name__} initialized.")
 
@@ -175,15 +175,17 @@ class ShipTelemetryMonitor:
     def _handle_handover_request(self, sample):
         try:
             self.handover_request = sample.payload.to_string()
+            print(self.handover_request)
             if 'handle_handover_request' in self.extra_callbacks:
                 self.extra_callbacks['handle_handover_request'](self.handover_request)
         except:
             self.handover_request = None
 
-    def _handle_handover_status(self, sample):
+    def _handle_handover_state(self, sample):
         try:
-            self.handover_status = sample.payload.to_string()
-            if 'handle_handover_status' in self.extra_callbacks:
-                self.extra_callbacks['handle_handover_status'](self.handover_status)
+            self.handover_state = sample.payload.to_string()
+            print(self.handover_state)
+            if 'handle_handover_state' in self.extra_callbacks:
+                self.extra_callbacks['handle_handover_state'](self.handover_state)
         except:
-            self.handover_status = None
+            self.handover_state = None
