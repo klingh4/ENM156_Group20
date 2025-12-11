@@ -65,75 +65,133 @@ class RocGui:
         roc_id_label = tk.Label(frame_roc, text="ROC_1", font=("Arial", 12, "bold"), anchor="w")
         roc_id_label.grid(row=0, column=1, sticky="w")
 
+        # Separator
+        ttk.Separator(frame_roc, orient="horizontal").grid(
+            row=1, column=0, sticky="ew", pady=10
+        )
+
         # ROC location row
-        tk.Label(frame_roc, text="ROC location:", font=("Arial", 12), anchor="w").grid(row=1, column=0, sticky="w")
+        tk.Label(frame_roc, text="ROC location:", font=("Arial", 12), anchor="w").grid(row=2, column=0, sticky="w")
         roc_location_label = tk.Label(frame_roc, text="Vaasa", font=("Arial", 12, "bold"), anchor="w")
-        roc_location_label.grid(row=1, column=1, sticky="w")
+        roc_location_label.grid(row=2, column=1, sticky="w")
 
         ## Second column
+        # --- Vessel Control Frame ---
+        frame_control = tk.LabelFrame(root, text="Vessel control", padx=10, pady=10)
+        frame_control.grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
 
-        # -------------------------------------------------------
-        # Visualisation area with Zenoh controls
-        # -------------------------------------------------------
-        frame_visual = tk.LabelFrame(root, text="Visualization / Data Modules")
-        frame_visual.grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
+        # Internal grid configuration
+        frame_control.columnconfigure(0, weight=1)
+        frame_control.columnconfigure(1, weight=1)
+        frame_control.columnconfigure(2, weight=1)
 
-        # Create control panel
-        control_frame = tk.Frame(frame_visual)
-        control_frame.pack(expand=True, fill="both", padx=10, pady=10)
 
-        # COG Control
-        tk.Label(control_frame, text="Set course Over Ground (COG):", font=("Arial", 12, "bold")).grid(row=0, column=0, sticky="w", pady=5)
-        cog_entry = tk.Entry(control_frame, font=("Arial", 12), width=15)
-        cog_entry.grid(row=0, column=1, padx=10, pady=5)
-        cog_send_btn = tk.Button(control_frame, text="Send COG", font=("Arial", 10), 
-                                 command=lambda: self.send_cog(cog_entry.get()))
-        cog_send_btn.grid(row=0, column=2, padx=5, pady=5)
+        # -------------------------
+        # Section: Speed over ground
+        # -------------------------
+        tk.Label(frame_control, text="Speed over ground", font=("Arial", 10, "bold")).grid(
+            row=0, column=0, columnspan=3, sticky="w", pady=(0, 5)
+        )
 
-        # COG Output display
-        tk.Label(control_frame, text="Current COG:", font=("Arial", 10)).grid(row=1, column=0, sticky="w", pady=5)
-        cog_out_label = tk.Label(control_frame, text="---", font=("Arial", 10), fg="blue")
-        cog_out_label.grid(row=1, column=1, sticky="w", pady=5)
+        tk.Label(frame_control, text="Current SOG:", anchor="w").grid(row=1, column=0, sticky="w")
+        sog_label = tk.Label(frame_control, text="N/A", anchor="w")
+        sog_label.grid(row=1, column=1, sticky="w")
 
-        # SOG Control
-        tk.Label(control_frame, text="Set speed Over Ground (SOG):", font=("Arial", 12, "bold")).grid(row=2, column=0, sticky="w", pady=5)
-        sog_entry = tk.Entry(control_frame, font=("Arial", 12), width=15)
-        sog_entry.grid(row=2, column=1, padx=10, pady=5)
-        sog_send_btn = tk.Button(control_frame, text="Send SOG", font=("Arial", 10),
-                                 command=lambda: self.send_sog(sog_entry.get()))
-        sog_send_btn.grid(row=2, column=2, padx=5, pady=5)
+        sog_entry = tk.Entry(frame_control)
+        sog_entry.grid(row=2, column=0, columnspan=2, sticky="ew", pady=2)
+        sog_button = tk.Button(frame_control, text="Set new SOG")
+        sog_button.grid(row=2, column=2, sticky="ew", padx=(5, 0))
 
-        # SOG Output display
-        tk.Label(control_frame, text="Current SOG:", font=("Arial", 10)).grid(row=3, column=0, sticky="w", pady=5)
-        sog_out_label = tk.Label(control_frame, text="---", font=("Arial", 10), fg="blue")
-        sog_out_label.grid(row=3, column=1, sticky="w", pady=5)
-
-        self.cog_out_label = cog_out_label
-        self.sog_out_label = sog_out_label
 
         # Separator
-        ttk.Separator(control_frame, orient='horizontal').grid(row=4, column=0, columnspan=3, sticky="ew", pady=15)
+        ttk.Separator(frame_control, orient="horizontal").grid(
+            row=3, column=0, columnspan=3, sticky="ew", pady=10
+        )
 
-        # Position Display
-        tk.Label(control_frame, text="Current Position:", font=("Arial", 12, "bold")).grid(row=5, column=0, sticky="w", pady=5)
 
-        tk.Label(control_frame, text="Latitude:", font=("Arial", 10)).grid(row=6, column=0, sticky="w", pady=5)
-        lat_label = tk.Label(control_frame, text="---", font=("Arial", 10), fg="green")
-        lat_label.grid(row=6, column=1, sticky="w", pady=5)
+        # -------------------------
+        # Section: Course over ground
+        # -------------------------
+        tk.Label(frame_control, text="Course over ground", font=("Arial", 10, "bold")).grid(
+            row=4, column=0, columnspan=3, sticky="w", pady=(0, 5)
+        )
 
-        tk.Label(control_frame, text="Longitude:", font=("Arial", 10)).grid(row=7, column=0, sticky="w", pady=5)
-        lon_label = tk.Label(control_frame, text="---", font=("Arial", 10), fg="green")
-        lon_label.grid(row=7, column=1, sticky="w", pady=5)
+        tk.Label(frame_control, text="Current COG:", anchor="w").grid(row=5, column=0, sticky="w")
+        cog_label = tk.Label(frame_control, text="N/A", anchor="w")
+        cog_label.grid(row=5, column=1, sticky="w")
 
-        self.lat_label = lat_label
-        self.lon_label = lon_label
+        cog_entry = tk.Entry(frame_control)
+        cog_entry.grid(row=6, column=0, columnspan=2, sticky="ew", pady=2)
+        cog_button = tk.Button(frame_control, text="Set new COG")
+        cog_button.grid(row=6, column=2, sticky="ew", padx=(5, 0))
 
-        # State display
-        tk.Label(control_frame, text="Vessel State:", font=("Arial", 10)).grid(row=9, column=0, sticky="w", pady=5)
-        state_label = tk.Label(control_frame, text="---", font=("Arial", 10), fg="orange")
-        state_label.grid(row=9, column=1, sticky="w", pady=5)
+        halt_button = tk.Button(frame_control, text="Halt vessel immediately", bg="red")
+        halt_button.grid(row=7, column=2, sticky="ew", pady=5)
 
-        self.state_label = state_label
+
+        # Separator
+        ttk.Separator(frame_control, orient="horizontal").grid(
+            row=8, column=0, columnspan=3, sticky="ew", pady=10
+        )
+
+
+        # -------------------------
+        # Section: ROC handover
+        # -------------------------
+        tk.Label(frame_control, text="ROC handover", font=("Arial", 10, "bold")).grid(
+            row=9, column=0, columnspan=3, sticky="w", pady=(0, 5)
+        )
+
+        tk.Label(frame_control, text="Time until safety gate:", anchor="w").grid(row=10, column=0, sticky="w")
+        time_until_label = tk.Label(frame_control, text="N/A", anchor="w")
+        time_until_label.grid(row=10, column=1, sticky="w")
+
+        tk.Label(frame_control, text="Handover status:", anchor="w").grid(row=11, column=0, sticky="w")
+        handover_status_label = tk.Label(frame_control, text="N/A", anchor="w")
+        handover_status_label.grid(row=11, column=1, sticky="w")
+
+        verify_button = tk.Button(frame_control, text="Verify and send checklist")
+        verify_button.grid(row=12, column=0, columnspan=3, sticky="ew", pady=2)
+
+        relinquish_button = tk.Button(frame_control, text="Relinquish control")
+        relinquish_button.grid(row=13, column=0, columnspan=3, sticky="ew", pady=5)
+
+        # --- Vessel Information Frame ---
+        frame_vessel_info = tk.LabelFrame(root, text="Vessel information", padx=10, pady=10)
+        frame_vessel_info.grid(row=1, column=1, sticky="nsew", padx=5, pady=5)
+
+        # Configure internal grid
+        frame_vessel_info.columnconfigure(0, weight=1)
+        frame_vessel_info.columnconfigure(1, weight=2)
+
+        label_font = ("Arial", 12)
+        value_font = ("Arial", 12, "bold")
+
+        # --- Vessel identifier ---
+        tk.Label(frame_vessel_info, text="Vessel identifier:", font=label_font, anchor="w").grid(
+            row=0, column=0, sticky="w"
+        )
+        vessel_id_label = tk.Label(frame_vessel_info, text="N/A", font=value_font, anchor="w")
+        vessel_id_label.grid(row=0, column=1, sticky="w")
+
+        # Separator
+        ttk.Separator(frame_vessel_info, orient="horizontal").grid(
+            row=1, column=0, sticky="ew", pady=10
+        )
+
+        # Latitude
+        tk.Label(frame_vessel_info, text="Current latitude:", font=label_font, anchor="w").grid(
+            row=2, column=0, sticky="w"
+        )
+        lat_label = tk.Label(frame_vessel_info, text="N/A", font=value_font, anchor="w")
+        lat_label.grid(row=2, column=1, sticky="w")
+
+        # Longitude
+        tk.Label(frame_vessel_info, text="Current longitude:", font=label_font, anchor="w").grid(
+            row=3, column=0, sticky="w"
+        )
+        lon_label = tk.Label(frame_vessel_info, text="N/A", font=value_font, anchor="w")
+        lon_label.grid(row=3, column=1, sticky="w")
 
         ## Third column
 
@@ -185,19 +243,19 @@ class RocGui:
         # -------------------------------------------------------
         # VEHICLE NAME + TIMER
         # -------------------------------------------------------
-        frame_info = tk.Frame(control_frame)
-        frame_info.grid(row=10, column=0, sticky="nsew")
+        #frame_info = tk.Frame(control_frame)
+        #frame_info.grid(row=10, column=0, sticky="nsew")
 
-        vessel_label = tk.Label(frame_info, text="Vessel Name", font=("Arial", 20))
-        vessel_label.pack(pady=10)
+        #vessel_label = tk.Label(frame_info, text="Vessel Name", font=("Arial", 20))
+        #vessel_label.pack(pady=10)
 
-        timer_label = tk.Label(frame_info, text="--:--", font=("Arial", 36))
-        timer_label.pack(pady=5)
+        #timer_label = tk.Label(frame_info, text="--:--", font=("Arial", 36))
+        #timer_label.pack(pady=5)
 
-        tk.Label(frame_info, text="Time left until safety gate", font=("Arial", 14)).pack()
+        #tk.Label(frame_info, text="Time left until safety gate", font=("Arial", 14)).pack()
 
-        self.vessel_label = vessel_label
-        self.timer_label = timer_label
+        #self.vessel_label = vessel_label
+        #self.timer_label = timer_label
 
         # -------------------------------------------------------
         # BOTTOM BUTTONS
