@@ -104,9 +104,12 @@ class RocGui:
 
         self.sog_label = sog_label
 
+        halt_button = tk.Button(frame_control, text="Halt vessel", fg="red")
+        halt_button.grid(row=3, column=2, sticky="ew", pady=5)
+
         # Separator
         ttk.Separator(frame_control, orient="horizontal").grid(
-            row=3, column=0, columnspan=3, sticky="ew", pady=10
+            row=4, column=0, columnspan=3, sticky="ew", pady=10
         )
 
 
@@ -114,20 +117,17 @@ class RocGui:
         # Section: Course over ground
         # -------------------------
         tk.Label(frame_control, text="Course over ground", font=("Arial", 10, "bold")).grid(
-            row=4, column=0, columnspan=3, sticky="w", pady=(0, 5)
+            row=5, column=0, columnspan=3, sticky="w", pady=(0, 5)
         )
 
-        tk.Label(frame_control, text="Current COG:", anchor="w").grid(row=5, column=0, sticky="w")
+        tk.Label(frame_control, text="Current COG:", anchor="w").grid(row=6, column=0, sticky="w")
         cog_label = tk.Label(frame_control, text="N/A", anchor="w")
-        cog_label.grid(row=5, column=1, sticky="w")
+        cog_label.grid(row=6, column=1, sticky="w")
 
         cog_entry = tk.Entry(frame_control)
-        cog_entry.grid(row=6, column=0, columnspan=2, sticky="ew", pady=2)
+        cog_entry.grid(row=7, column=0, columnspan=2, sticky="ew", pady=2)
         cog_button = tk.Button(frame_control, text="Set new COG")
-        cog_button.grid(row=6, column=2, sticky="ew", padx=(5, 0))
-
-        halt_button = tk.Button(frame_control, text="Halt vessel immediately", bg="red")
-        halt_button.grid(row=7, column=2, sticky="ew", pady=5)
+        cog_button.grid(row=7, column=2, sticky="ew", padx=(5, 0))
 
         self.cog_label = cog_label
 
