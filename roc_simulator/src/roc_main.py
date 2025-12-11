@@ -18,6 +18,7 @@ def main():
 
     # Initialize telemetry monitor with added callbacks to GUI
     monitor = ShipTelemetryMonitor("MASS_0", callbacks)
+    gui.monitor = monitor
 
     # This blocks and must thus be done last
     gui.mainloop()

@@ -7,7 +7,6 @@ from tkinter import ttk
 from tkinter.scrolledtext import ScrolledText
 from tkintermapview import TkinterMapView
 
-
 # Don't update map widget more often than this to avoid flickering
 MAP_WIDGET_UPDATE_CAP = 5
 
@@ -28,7 +27,7 @@ class RocGui:
         root.rowconfigure(2, weight=1)
 
         # Should exit main loop on closing window
-        root.protocol("WM_DELETE_WINDOW", root.destroy)
+        root.protocol("WM_DELETE_WINDOW", self.on_close)
 
         # -------------------------------------------------------
         # VEHICLE MAP PANEL (live-map)
@@ -198,10 +197,22 @@ class RocGui:
         )
         btn_abort.grid(row=0, column=1, padx=40)
 
+        # Bit of an ugly hack - but if we get handed this we can properly close
+        # the zenoh session and thus properly exit on closing the window.
+        self.monitor = None
+
         print(f"{self.__class__.__name__} initialized.")
 
     def mainloop(self):
         self.root.mainloop()
+
+    def on_close(self):
+        # Close zenoh session properly at exit
+        if self.monitor:
+            self.monitor.session.close()
+
+        self.root.quit()
+        self.root.destroy()
 
     def send_cog(self, cog):
         print(f"(Placeholder) Send COG: {cog}")
