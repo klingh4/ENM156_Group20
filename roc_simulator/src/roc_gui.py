@@ -102,6 +102,7 @@ class RocGui:
         sog_button = tk.Button(frame_control, text="Set new SOG")
         sog_button.grid(row=2, column=2, sticky="ew", padx=(5, 0))
 
+        self.sog_label = sog_label
 
         # Separator
         ttk.Separator(frame_control, orient="horizontal").grid(
@@ -128,6 +129,7 @@ class RocGui:
         halt_button = tk.Button(frame_control, text="Halt vessel immediately", bg="red")
         halt_button.grid(row=7, column=2, sticky="ew", pady=5)
 
+        self.cog_label = cog_label
 
         # Separator
         ttk.Separator(frame_control, orient="horizontal").grid(
@@ -145,6 +147,8 @@ class RocGui:
         tk.Label(frame_control, text="Time until safety gate:", anchor="w").grid(row=10, column=0, sticky="w")
         time_until_label = tk.Label(frame_control, text="N/A", anchor="w")
         time_until_label.grid(row=10, column=1, sticky="w")
+
+        self.time_until_label = time_until_label
 
         tk.Label(frame_control, text="Handover status:", anchor="w").grid(row=11, column=0, sticky="w")
         handover_status_label = tk.Label(frame_control, text="N/A", anchor="w")
@@ -174,24 +178,38 @@ class RocGui:
         vessel_id_label = tk.Label(frame_vessel_info, text="N/A", font=value_font, anchor="w")
         vessel_id_label.grid(row=0, column=1, sticky="w")
 
+        self.vessel_id_label = vessel_id_label
+
+        tk.Label(frame_vessel_info, text="Vessel status:", font=label_font, anchor="w").grid(
+            row=1, column=0, sticky="w"
+        )
+        vessel_status_label = tk.Label(frame_vessel_info, text="N/A", font=value_font, anchor="w")
+        vessel_status_label.grid(row=1, column=1, sticky="w")
+
+        self.vessel_status_label = vessel_status_label
+
         # Separator
         ttk.Separator(frame_vessel_info, orient="horizontal").grid(
-            row=1, column=0, sticky="ew", pady=10
+            row=2, column=0, sticky="ew", pady=10
         )
 
         # Latitude
         tk.Label(frame_vessel_info, text="Current latitude:", font=label_font, anchor="w").grid(
-            row=2, column=0, sticky="w"
+            row=3, column=0, sticky="w"
         )
         lat_label = tk.Label(frame_vessel_info, text="N/A", font=value_font, anchor="w")
-        lat_label.grid(row=2, column=1, sticky="w")
+        lat_label.grid(row=3, column=1, sticky="w")
+
+        self.lat_label = lat_label
 
         # Longitude
         tk.Label(frame_vessel_info, text="Current longitude:", font=label_font, anchor="w").grid(
-            row=3, column=0, sticky="w"
+            row=4, column=0, sticky="w"
         )
         lon_label = tk.Label(frame_vessel_info, text="N/A", font=value_font, anchor="w")
-        lon_label.grid(row=3, column=1, sticky="w")
+        lon_label.grid(row=4, column=1, sticky="w")
+
+        self.lon_label = lon_label
 
         ## Third column
 
@@ -234,7 +252,7 @@ class RocGui:
         # -------------------------------------------------------
         # NOTES EDITOR
         # -------------------------------------------------------
-        frame_notes = tk.LabelFrame(root, text="Remarks about vessel status")
+        frame_notes = tk.LabelFrame(root, text="(Optional) remarks about vessel status for next ROC")
         frame_notes.grid(row=1, column=2, sticky="nsew", padx=10, pady=10)
 
         notes_field = ScrolledText(frame_notes, height=5)
@@ -276,27 +294,27 @@ class RocGui:
 
     # Setup GUI callbacks for ship updates
     def update_cog_out(self, value):
-        self.cog_out_label.config(text=value)
+        self.cog_label.config(text=f"{value:.2f}")
 
     def update_sog_out(self, value):
-        self.sog_out_label.config(text=value)
+        self.sog_label.config(text=f"{value:.2f}")
 
     def update_remote_status(self, value):
-        self.state_label.config(text=value)
+        self.vessel_status_label.config(text=value)
 
     def update_remote_time(self, value):
         ## Format into hh:mm:ss at one second precision
         time_fmt = str(datetime.timedelta(seconds=int(value)))
-        self.timer_label.config(text=time_fmt)
+        self.time_until_label.config(text=time_fmt)
 
     def update_vessel_name(self, value):
-        self.vessel_label.config(text=value)
+        self.vessel_id_label.config(text=value)
 
     # Update map position to given lat/long
     def update_map_position(self, lat_val, lon_val):
         try:
-            self.lat_label.config(text=lat_val)
-            self.lon_label.config(text=lon_val)
+            self.lat_label.config(text=f"{lat_val:.6f}")
+            self.lon_label.config(text=f"{lon_val:.6f}")
 
             # To counter flickering, set a limit to map widget update frequency
             if time.time() > self.map_widget_last_updated_time + MAP_WIDGET_UPDATE_CAP:
