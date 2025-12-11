@@ -1,11 +1,19 @@
 #!/usr/bin/env python3
 
+import argparse
+
 from ship_monitor import ShipTelemetryMonitor
 from roc_gui import RocGui
 
 def main():
+    parser = argparse.ArgumentParser(description="ROC simulator")
+    parser.add_argument("roc",
+                        choices=["ROC_1", "ROC_2"],
+                        help="ROC id")
+    args = parser.parse_args()
+
     # Initialize GUI
-    gui = RocGui()
+    gui = RocGui(args.roc)
 
     # Add extra callbacks to update GUI components from telemetry monitor
     callbacks = {}

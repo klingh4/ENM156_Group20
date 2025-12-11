@@ -14,7 +14,11 @@ MAP_WIDGET_UPDATE_CAP = 5
 # GUI start
 # -------------------------------------------------------
 class RocGui:
-    def __init__(self):
+    def __init__(self, roc_id):
+        self.roc_id = roc_id
+        self.roc_id_num = int(roc_id[-1])
+        self.roc_location = {"ROC_1": "Vaasa", "ROC_2": "Umeå"}[roc_id]
+
         root = tk.Tk()
         root.title("Vessel Readiness Panel – Interactive")
         root.geometry("1800x980")
@@ -62,7 +66,7 @@ class RocGui:
 
         # ROC identifier row
         tk.Label(frame_roc, text="ROC identifier:", font=("Arial", 12), anchor="w").grid(row=0, column=0, sticky="w")
-        roc_id_label = tk.Label(frame_roc, text="ROC_1", font=("Arial", 12, "bold"), anchor="w")
+        roc_id_label = tk.Label(frame_roc, text=self.roc_id, font=("Arial", 12, "bold"), anchor="w")
         roc_id_label.grid(row=0, column=1, sticky="w")
 
         # Separator
@@ -72,7 +76,7 @@ class RocGui:
 
         # ROC location row
         tk.Label(frame_roc, text="ROC location:", font=("Arial", 12), anchor="w").grid(row=2, column=0, sticky="w")
-        roc_location_label = tk.Label(frame_roc, text="Vaasa", font=("Arial", 12, "bold"), anchor="w")
+        roc_location_label = tk.Label(frame_roc, text=self.roc_location, font=("Arial", 12, "bold"), anchor="w")
         roc_location_label.grid(row=2, column=1, sticky="w")
 
         ## Second column
