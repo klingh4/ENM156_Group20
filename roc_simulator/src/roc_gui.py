@@ -10,6 +10,11 @@ from tkintermapview import TkinterMapView
 # Don't update map widget more often than this to avoid flickering
 MAP_WIDGET_UPDATE_CAP = 5
 
+# Some enums
+HANDOVER_STATE_PENDING = 0
+HANDOVER_STATE_READY = 1
+HANDOVER_STATE_COMPLETED = 2
+
 # -------------------------------------------------------
 # GUI start
 # -------------------------------------------------------
@@ -22,6 +27,7 @@ class RocGui:
         self.vessel = roc_controller.vessel
         # Hack !! TODO: listen to vessel when it supports this
         self.controlling_roc = "ROC_1"
+        self.handover_state = HANDOVER_STATE_PENDING
 
         root = tk.Tk()
         root.title("Vessel Readiness Panel – Interactive")
@@ -189,15 +195,22 @@ class RocGui:
         handover_status_label = tk.Label(frame_control, text="N/A", anchor="w", font=value_font)
         handover_status_label.grid(row=14, column=1, sticky="w")
 
+        self.handover_status_label = handover_status_label
+
         verify_button = tk.Button(frame_control, text="Verify and send checklist (not implemented yet)", state="disabled")
         verify_button.grid(row=15, column=0, columnspan=3, sticky="ew", pady=2)
 
         self.verify_button = verify_button
 
-        relinquish_button = tk.Button(frame_control, text="Relinquish control", command=self.relinquish)
+        relinquish_button = tk.Button(frame_control, text="Relinquish control", command=self.on_relinquish, state="disabled")
         relinquish_button.grid(row=16, column=0, columnspan=3, sticky="ew", pady=5)
 
         self.relinquish_button = relinquish_button
+
+        takeover_button = tk.Button(frame_control, text="Request control", command=self.on_request, state="disabled")
+        takeover_button.grid(row=17, column=0, columnspan=3, sticky="ew", pady=5)
+
+        self.takeover_button = takeover_button
 
 
         # --- Vessel Information Frame ---
@@ -317,14 +330,26 @@ class RocGui:
         self.root.mainloop()
 
     def conditionally_enable_elements(self):
+        # Basic SOG/COG/halt
         for element in [
-            self.sog_button, self.sog_entry, self.cog_button, self.cog_entry,
-            self.halt_button, self.relinquish_button, # self.verify_button
+            self.sog_button, self.sog_entry, self.cog_button, self.cog_entry, self.halt_button
         ]:
             if self.roc_id == self.controlling_roc:
                 element.config(state="normal")
             else:
                 element.config(state="disabled")
+
+        # Handover elements
+        if self.handover_state in [HANDOVER_STATE_PENDING, HANDOVER_STATE_COMPLETED]:
+            self.relinquish_button.config(state="disabled")
+            self.takeover_button.config(state="disabled")
+        elif self.handover_state == HANDOVER_STATE_READY:
+            if self.roc_id == self.controlling_roc:
+                self.relinquish_button.config(state="normal")
+                self.takeover_button.config(state="disabled")
+            else:
+                self.relinquish_button.config(state="disabled")
+                self.takeover_button.config(state="normal")
 
     def on_close(self):
         # Close zenoh session properly at exit
@@ -334,8 +359,11 @@ class RocGui:
         self.root.quit()
         self.root.destroy()
 
-    def relinquish(self):
+    def on_relinquish(self):
         self.roc_controller.send_relinquish()
+
+    def on_request(self):
+        self.roc_controller.send_takeover()
 
     def send_cog(self):
         # TODO: validate data
@@ -360,6 +388,16 @@ class RocGui:
         print("-------------------------\n")
 
     # Setup GUI callbacks for ship updates
+    def on_handover_request(self, value):
+        self.handover_state = HANDOVER_STATE_READY
+        self.handover_status_label.config(text=value)
+        self.conditionally_enable_elements()
+
+    def on_handover_status(self, value):
+        self.handover_state = HANDOVER_STATE_COMPLETED
+        self.handover_status_label.config(text=value)
+        self.conditionally_enable_elements()
+
     def update_cog_out(self, value):
         self.cog_label.config(text=f"{value:.2f}")
 

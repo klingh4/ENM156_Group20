@@ -18,6 +18,7 @@ class ROCController:
         self.pub_cog = self.zenoh.declare_publisher(f"{self.vessel}/control/roc/{self.roc_id}/COG")
         self.pub_sog = self.zenoh.declare_publisher(f"{self.vessel}/control/roc/{self.roc_id}/SOG")
         self.pub_relinquish = self.zenoh.declare_publisher(f"{self.vessel}/handover/relinquish")
+        self.pub_takeover = self.zenoh.declare_publisher(f"{self.vessel}/handover/takeover")
 
     def send_cog(self, value):
         msg = TimestampedFloat()
@@ -36,3 +37,7 @@ class ROCController:
     def send_relinquish(self):
         self.pub_relinquish.put(self.roc_id)
         print(f"[{self.roc_id}] Sent relinquish")
+
+    def send_takeover(self):
+        self.pub_takeover.put(self.roc_id)
+        print(f"[{self.roc_id}] Sent takeover")
