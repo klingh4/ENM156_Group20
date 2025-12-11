@@ -106,7 +106,7 @@ html, body {
     flex-direction: column;
 }
 
-/* Status Bar */
+/* Status Bar Internal Layout */
 .status-main {
     flex: 1;
     display: flex;
@@ -146,10 +146,12 @@ html, body {
     text-align: center;
 }
 
+/* Status Colors */
 .status-uncertain { background-color: #374151; color: #9CA3AF; }
 .status-ready { background-color: #059669; color: #d1fae5; }
 .status-aborted { background-color: #dc2626; color: #fee2e2; }
 
+/* Status Bar Text Styles */
 #status-bar h2 {
     margin: 0 0 8px 0;
     color: #F9FAFB;
@@ -165,6 +167,12 @@ html, body {
 #status-bar p {
     margin: 4px 0 0 0;
     color: #9CA3AF;
+}
+
+#handover-result-container {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 /* Remarks Text Editor */

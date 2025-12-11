@@ -28,7 +28,7 @@
             </form>
         </div>
     </dialog>
-    
+
     <!-- 2. Handover Configuration Dialog -->
     <dialog id="config-handover-dialog" class="modal-overlay">
         <div class="modal-content panel">
@@ -284,9 +284,9 @@
                 <div id="timer">--:--</div>
                 <p>Seconds until safety gate</p>
             </div>
-            
+
             <!-- Right Side: ROC Readiness Indicators -->
-            <div class="status-indicators">
+            <div id="status-indicators-container" class="status-indicators">
                 <div class="status-item">
                     <span class="status-label" id="status-original-label">Original ROC</span>
                     <span id="orig-roc-status" class="status-badge status-uncertain">UNCERTAIN</span>
@@ -295,6 +295,11 @@
                     <span class="status-label" id="status-receiving-label">Receiving ROC</span>
                     <span id="recv-roc-status" class="status-badge status-uncertain">UNCERTAIN</span>
                 </div>
+            </div>
+            <!-- Right Side (Alternative): Handover Result (Hidden by default) -->
+            <div id="handover-result-container" class="handover-result-container" style="display: none;">
+                <h3 class="handover-result-title">Handover Result</h3>
+                <h2 id="handover-result-value" class="handover-result-value"></h2>
             </div>
         </div>
 
@@ -307,4 +312,5 @@
 
     </div>
 </body>
+
 </html>
