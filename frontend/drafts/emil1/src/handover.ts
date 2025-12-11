@@ -1,4 +1,4 @@
-import type { Sample } from "node_modules/@eclipse-zenoh/zenoh-ts/dist/sample";
+import type { Sample } from "@eclipse-zenoh/zenoh-ts";
 import { type VesselIdent, ROC, Readiness, type ROCIdent, thisRoc } from "./roc";
 import { pubAbortHandover, pubAssertReady, publishRelinquish, publishTakeover } from "./zenoh-interfacer";
 
@@ -14,13 +14,22 @@ export class Handover {
     timerElement: HTMLElement | undefined;
     handoverInitiated: boolean = false;
     takeoverIntervalId: number | undefined;
+    handoverResult: string | null = null;
 
     // UI Elements for readiness
     origRocStatusElem: HTMLElement | null = null;
     recvRocStatusElem: HTMLElement | null = null;
 
+    // UI Elements for result
+    statusIndicatorsContainer: HTMLElement | null = null;
+    resultContainer: HTMLElement | null = null;
+    resultValueElem: HTMLElement | null = null;
+
     public set hasVesselRequestedHandoverValue(value: boolean) {
         this.hasVesselRequestedHandover = value;
+        if (value) {
+            setInterval(this.performHandoverIfAppropriate.bind(this), 1000);
+        }
     }
 
     constructor(gate: SafetyGateIdent
@@ -37,17 +46,60 @@ export class Handover {
         if (linkTimer) { this.linkTimerElement(); }
     }
 
-    setUIElements(origStatus: HTMLElement | null, recvStatus: HTMLElement | null, origLabel: HTMLElement | null, recvLabel: HTMLElement | null) {
+    setUIElements(
+        origStatus: HTMLElement | null,
+        recvStatus: HTMLElement | null,
+        origLabel: HTMLElement | null,
+        recvLabel: HTMLElement | null,
+        indicatorsContainer: HTMLElement | null,
+        resultContainer: HTMLElement | null,
+        resultValue: HTMLElement | null
+    ) {
         this.origRocStatusElem = origStatus;
         this.recvRocStatusElem = recvStatus;
+        this.statusIndicatorsContainer = indicatorsContainer;
+        this.resultContainer = resultContainer;
+        this.resultValueElem = resultValue;
+
         if (origLabel) origLabel.innerText = `Original (${this.originallyResponsible.id})`;
         if (recvLabel) recvLabel.innerText = `Receiving (${this.receivingResponsibility.id})`;
         this.updateReadinessUI();
     }
 
     updateReadinessUI() {
+        // If we have a result, don't update readiness indicators (they should be hidden)
+        if (this.handoverResult) return;
+
         if (this.origRocStatusElem) this.updateRocBadge(this.origRocStatusElem, this.originallyResponsible.readiness);
         if (this.recvRocStatusElem) this.updateRocBadge(this.recvRocStatusElem, this.receivingResponsibility.readiness);
+    }
+
+    setHandoverResult(result: string) {
+        this.handoverResult = result;
+
+        // Hide readiness indicators
+        if (this.statusIndicatorsContainer) {
+            this.statusIndicatorsContainer.style.display = 'none';
+        }
+
+        // Show result container
+        if (this.resultContainer && this.resultValueElem) {
+            this.resultContainer.style.display = 'flex';
+            this.resultValueElem.innerText = result;
+
+            // Optional: color coding based on success/failure content
+            if (result.toUpperCase().includes("COMPLETED") || result.toUpperCase().includes("SUCCESS")) {
+                this.resultValueElem.style.color = "#059669"; // Green
+            } else {
+                this.resultValueElem.style.color = "#DC2626"; // Red (e.g., if aborted)
+            }
+        }
+
+        // Also ensure timer stops if running
+        if (this.takeoverIntervalId) {
+            clearInterval(this.takeoverIntervalId);
+            this.takeoverIntervalId = undefined;
+        }
     }
 
     updateRocBadge(element: HTMLElement, readiness: Readiness) {
@@ -135,7 +187,7 @@ export class Handover {
     }
 
     performHandoverIfAppropriate() {
-        if (this.handoverInitiated) {
+        if (this.handoverInitiated || this.handoverResult) { // Don't restart if done
             return;
         }
 

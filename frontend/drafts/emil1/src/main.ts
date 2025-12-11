@@ -125,7 +125,10 @@ configHandoverForm.addEventListener("submit", async (event) => {
             document.getElementById("orig-roc-status"),
             document.getElementById("recv-roc-status"),
             document.getElementById("status-original-label"),
-            document.getElementById("status-receiving-label")
+            document.getElementById("status-receiving-label"),
+            document.getElementById("status-indicators-container"), // New container
+            document.getElementById("handover-result-container"), // New result container
+            document.getElementById("handover-result-value") // New result text
         );
 
         // Update local button listeners to refresh UI
@@ -169,9 +172,7 @@ configHandoverForm.addEventListener("submit", async (event) => {
             declareStateHandler(handover.vesselId, ((sample: Sample) => {
                 console.log("Received handover state update: " + sample.payload().toString());
                 if (sample.payload().toString().includes("HANDOVER_COMPLETED")) {
-                    if (handover.takeoverIntervalId) {
-                        clearInterval(handover.takeoverIntervalId);
-                    }
+                    handover.setHandoverResult("COMPLETED");
                 }
             }));
         } catch (error) {
