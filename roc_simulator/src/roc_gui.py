@@ -216,6 +216,7 @@ class RocGui:
 
         self.takeover_button = takeover_button
 
+        ## Lower second column
 
         # --- Vessel Information Frame ---
         frame_vessel_info = tk.LabelFrame(root, text="Vessel information", padx=10, pady=10)
@@ -364,9 +365,11 @@ class RocGui:
         self.root.destroy()
 
     def on_relinquish(self):
+        self.handover_status_label.configure(text="Awaiting confirmation...", fg="blue")
         self.roc_controller.send_relinquish()
 
     def on_request(self):
+        self.handover_status_label.configure(text="Awaiting confirmation...", fg="blue")
         self.roc_controller.send_takeover()
 
     def send_cog(self):
@@ -394,12 +397,13 @@ class RocGui:
     # Setup GUI callbacks for ship updates
     def on_handover_request(self, value):
         self.handover_state = HANDOVER_STATE_READY
-        self.handover_status_label.config(text=value[:25] + "...")
+        self.handover_status_label.config(text="Ready for handover", fg="green")
         self.conditionally_enable_elements()
 
     def on_handover_state(self, value):
         self.handover_state = HANDOVER_STATE_COMPLETED
-        self.handover_status_label.config(text=value[:25] + "...")
+        self.handover_status_label.config(text="Handover completed.", fg="green")
+        self.time_until_label.config(text="N/A")
 
         # AWFUL HACK (but quick)
         priority_roc = "ROC_2" if "new_priority=ROC_2" in value else "ROC_1"
