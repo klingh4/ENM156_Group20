@@ -141,6 +141,10 @@ class RocGui:
         self.sog_entry = sog_entry
         self.sog_label = sog_label
 
+        # Stash these values for later use!
+        self.default_bgcol = sog_button.cget("background")
+        self.default_abgcol = sog_button.cget("activebackground")
+
         halt_button = tk.Button(frame_control, text="Halt vessel", fg="red", command=self.halt_vessel)
         halt_button.grid(row=6, column=2, sticky="ew", pady=5)
 
@@ -341,15 +345,15 @@ class RocGui:
 
         # Handover elements
         if self.handover_state in [HANDOVER_STATE_PENDING, HANDOVER_STATE_COMPLETED]:
-            self.relinquish_button.config(state="disabled")
-            self.takeover_button.config(state="disabled")
+            self.relinquish_button.config(state="disabled", bg=self.default_bgcol, activebackground=self.default_abgcol)
+            self.takeover_button.config(state="disabled", bg=self.default_bgcol, activebackground=self.default_abgcol)
         elif self.handover_state == HANDOVER_STATE_READY:
             if self.roc_id == self.controlling_roc:
-                self.relinquish_button.config(state="normal")
+                self.relinquish_button.config(state="normal", bg="green", activebackground="lightgreen")
                 self.takeover_button.config(state="disabled")
             else:
                 self.relinquish_button.config(state="disabled")
-                self.takeover_button.config(state="normal")
+                self.takeover_button.config(state="normal", bg="green", activebackground="lightgreen")
 
     def on_close(self):
         # Close zenoh session properly at exit
