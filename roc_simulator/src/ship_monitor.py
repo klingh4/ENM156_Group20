@@ -73,6 +73,14 @@ class ShipTelemetryMonitor:
             f"{self.base}/{self.ship}/pubsub/remote_time/bridge/1",
             self._handle_remote_time)
 
+        self.session.declare_subscriber(
+            f"{self.base}/{self.ship}/handover/request",
+            self._handle_handover_request)
+
+        self.session.declare_subscriber(
+            f"{self.base}/{self.ship}/handover/state",
+            self._handle_handover_state)
+
         print(f"{self.__class__.__name__} initialized.")
 
 
@@ -142,9 +150,11 @@ class ShipTelemetryMonitor:
                 self.extra_callbacks['handle_nav_status'](self.nav_status)
 
     def _handle_roc_status(self, sample):
-        roc_status = self._decode(sample, ROCStatus)
-        if 'handle_roc_status' in self.extra_callbacks:
-            self.extra_callbacks['handle_roc_status'](self.roc_status)
+        msg = self._decode(sample, ROCStatus)
+        if msg:
+            self.roc_status = msg
+            if 'handle_roc_status' in self.extra_callbacks:
+                self.extra_callbacks['handle_roc_status'](self.roc_status)
 
     def _handle_remote_status(self, sample):
         try:
@@ -162,3 +172,20 @@ class ShipTelemetryMonitor:
         except:
             self.remote_time = None
 
+    def _handle_handover_request(self, sample):
+        try:
+            self.handover_request = sample.payload.to_string()
+            print(self.handover_request)
+            if 'handle_handover_request' in self.extra_callbacks:
+                self.extra_callbacks['handle_handover_request'](self.handover_request)
+        except:
+            self.handover_request = None
+
+    def _handle_handover_state(self, sample):
+        try:
+            self.handover_state = sample.payload.to_string()
+            print(self.handover_state)
+            if 'handle_handover_state' in self.extra_callbacks:
+                self.extra_callbacks['handle_handover_state'](self.handover_state)
+        except:
+            self.handover_state = None
