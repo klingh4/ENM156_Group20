@@ -1,3 +1,6 @@
 [submodule "ship_simulator_zenoh"]
 	path = ship_simulator_zenoh
 	url = https://github.com/KJBlanch/ship_simulator_zenoh.git
+[submodule "frontend/drafts/emil1/zenoh-ts"]
+	path = frontend/drafts/emil1/zenoh-ts
+	url = https://github.com/eclipse-zenoh/zenoh-ts.git

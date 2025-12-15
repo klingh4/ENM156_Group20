@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vessel Handover Interface</title>
+    <!-- Load Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- 1. Setup ROC Dialog -->
+    <dialog id="setup-roc-dialog" class="modal-overlay">
+        <div class="modal-content panel">
+            <h3 class="panel-title">ROC Setup</h3>
+            <form id="setup-roc-form">
+                <div class="form-group">
+                    <label for="this-roc-id">This ROC ID</label>
+                    <input type="text" id="this-roc-id" name="thisRocId" placeholder="e.g. ROC_1" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="control-button">Next</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    <!-- 2. Handover Configuration Dialog -->
+    <dialog id="config-handover-dialog" class="modal-overlay">
+        <div class="modal-content panel">
+            <h3 class="panel-title">Handover Configuration</h3>
+            <form id="config-handover-form">
+                <div class="form-group"
+                    style="border-bottom: 1px solid #374151; padding-bottom: 16px; margin-bottom: 16px;">
+                    <label for="handover-file">Load from JSON (Optional)</label>
+                    <input type="file" id="handover-file" accept=".json">
+                </div>
+                <div class="form-group">
+                    <label for="original-roc-id">Originally Responsible ROC ID</label>
+                    <input type="text" id="original-roc-id" name="originalRocId" placeholder="e.g. ROC_1" required>
+                </div>
+                <div class="form-group">
+                    <label for="receiving-roc-id">Receiving Responsibility ROC ID</label>
+                    <input type="text" id="receiving-roc-id" name="receivingRocId" placeholder="e.g. ROC_2" required>
+                </div>
+                <div class="form-group">
+                    <label for="gate-id">Safety Gate ID</label>
+                    <input type="text" id="gate-id" name="gateId" value="safety-gate-1" required>
+                </div>
+                <div class="form-group">
+                    <label for="vessel-id">Vessel ID (MASS)</label>
+                    <input type="text" id="vessel-id" name="vesselId" value="MASS_0" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="control-button">Start Session</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    <!-- Main Grid Container -->
+    <div class="grid-container">
+
+        <!-- 1. Map/Vehicle Panel (Left) -->
+        <div id="map-panel" class="panel">
+            <h3 class="panel-title">Vessel Position</h3>
+            <div id="map-view" class="placeholder-content">
+                <!-- Map will be injected here -->
+            </div>
+        </div>
+
+        <!-- 2. Visualization Tools Panel (Top Middle) -->
+        <div id="tools-panel" class="panel">
+            <h3 class="panel-title">Visualization Tools</h3>
+            <div class="placeholder-content">
+                <!-- <span>[Modular Data Visualization]</span> -->
+                <h3>Course over ground</h3>
+                <span id="cog">-</span>
+                <h3>Speed over ground</h3>
+                <span id="sog">-</span>
+            </div>
+        </div>
+
+        <!-- 3. Checklist Panel (Right) -->
+        <div id="checklist-panel" class="panel">
+            <h3 class="panel-title">Bridge Check List: Handover</h3>
+
+            <!-- Checklist Header -->
+            <div class="checklist-header">
+                <span class="header-item">Item</span>
+                <span class="header-remark">Remarks</span>
+            </div>
+
+            <!-- Checklist Items Container -->
+            <div class="checklist-items">
+
+                <!-- Item 1 -->
+                <div class="checklist-item">
+                    <div class="item-check">
+                        <input type="checkbox">
+                    </div>
+                    <div class="item-label">
+                        Master's orders confirm.
+                    </div>
+                    <div class="item-remark">
+                        <textarea class="remark-input" placeholder="Notes..." rows="1"></textarea>
+                    </div>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="checklist-item">
+                    <div class="item-check">
+                        <input type="checkbox">
+                    </div>
+                    <div class="item-label">
+                        GNSS log up to date.
+                    </div>
+                    <div class="item-remark">
+                        <textarea class="remark-input" placeholder="Notes..." rows="1"></textarea>
+                    </div>
+                </div>
+
+                <!-- Item 3 -->
+                <div class="checklist-item">
+                    <div class="item-check">
+                        <input type="checkbox">
+                    </div>
+                    <div class="item-label">
+                        Passage plan checked.
+                    </div>
+                    <div class="item-remark">
+                        <textarea class="remark-input" placeholder="Notes..." rows="1"></textarea>
+                    </div>
+                </div>
+
+                <!-- Item 4 -->
+                <div class="checklist-item">
+                    <div class="item-check">
+                        <input type="checkbox">
+                    </div>
+                    <div class="item-label">
+                        Weather reports reviewed.
+                    </div>
+                    <div class="item-remark">
+                        <textarea class="remark-input" placeholder="Notes..." rows="1"></textarea>
+                    </div>
+                </div>
+
+                <!-- Item 5 -->
+                <div class="checklist-item">
+                    <div class="item-check">
+                        <input type="checkbox">
+                    </div>
+                    <div class="item-label">
+                        Navigational warnings noted.
+                    </div>
+                    <div class="item-remark">
+                        <textarea class="remark-input" placeholder="Notes..." rows="1"></textarea>
+                    </div>
+                </div>
+
+                <!-- Item 6 -->
+                <div class="checklist-item">
+                    <div class="item-check">
+                        <input type="checkbox">
+                    </div>
+                    <div class="item-label">
+                        Status of AIS confirmed.
+                    </div>
+                    <div class="item-remark">
+                        <textarea class="remark-input" placeholder="Notes..." rows="1"></textarea>
+                    </div>
+                </div>
+
+                <!-- Item 7 -->
+                <div class="checklist-item">
+                    <div class="item-check">
+                        <input type="checkbox">
+                    </div>
+                    <div class="item-label">
+                        Status of Autopilot confirmed.
+                    </div>
+                    <div class="item-remark">
+                        <textarea class="remark-input" placeholder="Notes..." rows="1"></textarea>
+                    </div>
+                </div>
+
+                <!-- Item 8 -->
+                <div class="checklist-item">
+                    <div class="item-check">
+                        <input type="checkbox">
+                    </div>
+                    <div class="item-label">
+                        Echo sounder active.
+                    </div>
+                    <div class="item-remark">
+                        <textarea class="remark-input" placeholder="Notes..." rows="1"></textarea>
+                    </div>
+                </div>
+
+                <!-- Item 9 -->
+                <div class="checklist-item">
+                    <div class="item-check">
+                        <input type="checkbox">
+                    </div>
+                    <div class="item-label">
+                        Radar/ARPA active.
+                    </div>
+                    <div class="item-remark">
+                        <textarea class="remark-input" placeholder="Notes..." rows="1"></textarea>
+                    </div>
+                </div>
+
+                <!-- Item 10 -->
+                <div class="checklist-item">
+                    <div class="item-check">
+                        <input type="checkbox">
+                    </div>
+                    <div class="item-label">
+                        VHF/DSC checked.
+                    </div>
+                    <div class="item-remark">
+                        <textarea class="remark-input" placeholder="Notes..." rows="1"></textarea>
+                    </div>
+                </div>
+
+                <!-- Item 11 -->
+                <div class="checklist-item">
+                    <div class="item-check">
+                        <input type="checkbox">
+                    </div>
+                    <div class="item-label">
+                        Engine room status checked.
+                    </div>
+                    <div class="item-remark">
+                        <textarea class="remark-input" placeholder="Notes..." rows="1"></textarea>
+                    </div>
+                </div>
+
+                <!-- Item 12 -->
+                <div class="checklist-item">
+                    <div class="item-check">
+                        <input type="checkbox">
+                    </div>
+                    <div class="item-label">
+                        Ship Security Status green.
+                    </div>
+                    <div class="item-remark">
+                        <textarea class="remark-input" placeholder="Notes..." rows="1"></textarea>
+                    </div>
+                </div>
+
+                <!-- Item 13 -->
+                <div class="checklist-item">
+                    <div class="item-check">
+                        <input type="checkbox">
+                    </div>
+                    <div class="item-label">
+                        ECDIS operational.
+                    </div>
+                    <div class="item-remark">
+                        <textarea class="remark-input" placeholder="Notes..." rows="1"></textarea>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 4. Remarks Panel (Bottom Middle) -->
+        <div id="remarks-panel" class="panel">
+            <h3 class="panel-title">Remarks</h3>
+            <textarea id="remarks-editor" placeholder="Enter status remarks..."></textarea>
+        </div>
+
+        <!-- 5. Status Bar (Bottom Left) -->
+        <div id="status-bar" class="panel">
+            <!-- Left Side: Vessel Info & Timer -->
+            <div class="status-main">
+                <h2 id="vessel-title-display">Awaiting Vessel...</h2>
+                <div id="timer">--:--</div>
+                <p>Seconds until safety gate</p>
+            </div>
+
+            <!-- Right Side: ROC Readiness Indicators -->
+            <div id="status-indicators-container" class="status-indicators">
+                <div class="status-item">
+                    <span class="status-label" id="status-original-label">Original ROC</span>
+                    <span id="orig-roc-status" class="status-badge status-uncertain">UNCERTAIN</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label" id="status-receiving-label">Receiving ROC</span>
+                    <span id="recv-roc-status" class="status-badge status-uncertain">UNCERTAIN</span>
+                </div>
+            </div>
+            <!-- Right Side (Alternative): Handover Result (Hidden by default) -->
+            <div id="handover-result-container" class="handover-result-container" style="display: none;">
+                <h3 class="handover-result-title">Handover Result</h3>
+                <h2 id="handover-result-value" class="handover-result-value"></h2>
+            </div>
+        </div>
+
+        <!-- 6. Control Bar (Bottom Center/Right) -->
+        <div id="control-bar" class="panel">
+            <button id="btn-configure" class="control-button">Configure...</button>
+            <button id="btn-ready" class="control-button">Assert Ready</button>
+            <button id="btn-abort" class="control-button">Abort Handover</button>
+        </div>
+
+    </div>
+</body>
+
+</html>
