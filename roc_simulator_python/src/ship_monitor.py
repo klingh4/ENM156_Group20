@@ -1,4 +1,13 @@
 #!/usr/bin/env python3
+
+'''
+This module is basically just copy pasted from https://github.com/KJBlanch/ship_simulator_zenoh,
+with the addition of accepting extra arbitrary callback methods in the constructor.
+
+The intent of the module is to act as a listener for Zenoh/keelson messages received from the ship
+simulator and then react by triggering various handlers as appropriate.
+'''
+
 import time
 import zenoh
 from datetime import datetime
