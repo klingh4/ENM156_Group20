@@ -24,8 +24,8 @@ class RocGui:
         self.roc_id = roc_controller.roc_id
         self.roc_id_num = int(self.roc_id[-1])
         self.roc_location = {"ROC_1": "Vaasa", "ROC_2": "Umeå"}[self.roc_id]
-        self.vessel = roc_controller.vessel
-        # Hack !! TODO: listen to vessel when it supports this
+        self.ship = roc_controller.ship
+        # Hack !! TODO: listen to ship when it supports this
         self.controlling_roc = "ROC_1"
         self.handover_state = HANDOVER_STATE_PENDING
 
@@ -111,10 +111,10 @@ class RocGui:
         tk.Label(frame_control, text="Vessel status:", font=label_font, anchor="w").grid(
             row=1, column=0, sticky="w"
         )
-        vessel_status_label = tk.Label(frame_control, text="N/A", font=value_font, anchor="w")
-        vessel_status_label.grid(row=1, column=1, sticky="w")
+        ship_status_label = tk.Label(frame_control, text="N/A", font=value_font, anchor="w")
+        ship_status_label.grid(row=1, column=1, sticky="w")
 
-        self.vessel_status_label = vessel_status_label
+        self.ship_status_label = ship_status_label
 
         # Separator
         ttk.Separator(frame_control, orient="horizontal").grid(
@@ -145,7 +145,7 @@ class RocGui:
         self.default_bgcol = sog_button.cget("background")
         self.default_abgcol = sog_button.cget("activebackground")
 
-        halt_button = tk.Button(frame_control, text="Halt vessel", fg="red", command=self.halt_vessel)
+        halt_button = tk.Button(frame_control, text="Halt ship", fg="red", command=self.halt_ship)
         halt_button.grid(row=6, column=2, sticky="ew", pady=5)
 
         self.halt_button = halt_button
@@ -219,59 +219,59 @@ class RocGui:
         ## Lower second column
 
         # --- Vessel Information Frame ---
-        frame_vessel_info = tk.LabelFrame(root, text="Vessel information", padx=10, pady=10)
-        frame_vessel_info.grid(row=1, column=1, sticky="nsew", padx=5, pady=5)
+        frame_ship_info = tk.LabelFrame(root, text="Vessel information", padx=10, pady=10)
+        frame_ship_info.grid(row=1, column=1, sticky="nsew", padx=5, pady=5)
 
         # Configure internal grid
-        frame_vessel_info.columnconfigure(0, weight=1)
-        frame_vessel_info.columnconfigure(1, weight=2)
+        frame_ship_info.columnconfigure(0, weight=1)
+        frame_ship_info.columnconfigure(1, weight=2)
 
         # --- Vessel identifier ---
-        tk.Label(frame_vessel_info, text="Vessel identifier:", font=label_font, anchor="w").grid(
+        tk.Label(frame_ship_info, text="Vessel identifier:", font=label_font, anchor="w").grid(
             row=0, column=0, sticky="w"
         )
-        vessel_id_label = tk.Label(frame_vessel_info, text="N/A", font=value_font, anchor="w")
-        vessel_id_label.grid(row=0, column=1, sticky="w")
+        ship_id_label = tk.Label(frame_ship_info, text="N/A", font=value_font, anchor="w")
+        ship_id_label.grid(row=0, column=1, sticky="w")
 
-        self.vessel_id_label = vessel_id_label
+        self.ship_id_label = ship_id_label
 
         # MMSI
-        tk.Label(frame_vessel_info, text="MMSI:", font=label_font, anchor="w").grid(
+        tk.Label(frame_ship_info, text="MMSI:", font=label_font, anchor="w").grid(
             row=1, column=0, sticky="w"
         )
-        mmsi_label = tk.Label(frame_vessel_info, text="N/A", font=value_font, anchor="w")
+        mmsi_label = tk.Label(frame_ship_info, text="N/A", font=value_font, anchor="w")
         mmsi_label.grid(row=1, column=1, sticky="w")
 
         self.mmsi_label = mmsi_label
 
         # IMO
-        tk.Label(frame_vessel_info, text="IMO:", font=label_font, anchor="w").grid(
+        tk.Label(frame_ship_info, text="IMO:", font=label_font, anchor="w").grid(
             row=2, column=0, sticky="w"
         )
-        imo_label = tk.Label(frame_vessel_info, text="N/A", font=value_font, anchor="w")
+        imo_label = tk.Label(frame_ship_info, text="N/A", font=value_font, anchor="w")
         imo_label.grid(row=2, column=1, sticky="w")
 
         self.imo_label = imo_label
 
         # Separator
-        ttk.Separator(frame_vessel_info, orient="horizontal").grid(
+        ttk.Separator(frame_ship_info, orient="horizontal").grid(
             row=3, column=0, sticky="ew", pady=10
         )
 
         # Latitude
-        tk.Label(frame_vessel_info, text="Current latitude:", font=label_font, anchor="w").grid(
+        tk.Label(frame_ship_info, text="Current latitude:", font=label_font, anchor="w").grid(
             row=4, column=0, sticky="w"
         )
-        lat_label = tk.Label(frame_vessel_info, text="N/A", font=value_font, anchor="w")
+        lat_label = tk.Label(frame_ship_info, text="N/A", font=value_font, anchor="w")
         lat_label.grid(row=4, column=1, sticky="w")
 
         self.lat_label = lat_label
 
         # Longitude
-        tk.Label(frame_vessel_info, text="Current longitude:", font=label_font, anchor="w").grid(
+        tk.Label(frame_ship_info, text="Current longitude:", font=label_font, anchor="w").grid(
             row=5, column=0, sticky="w"
         )
-        lon_label = tk.Label(frame_vessel_info, text="N/A", font=value_font, anchor="w")
+        lon_label = tk.Label(frame_ship_info, text="N/A", font=value_font, anchor="w")
         lon_label.grid(row=5, column=1, sticky="w")
 
         self.lon_label = lon_label
@@ -317,7 +317,7 @@ class RocGui:
         # -------------------------------------------------------
         # NOTES EDITOR
         # -------------------------------------------------------
-        frame_notes = tk.LabelFrame(root, text="(Optional) remarks about vessel status for next ROC")
+        frame_notes = tk.LabelFrame(root, text="(Optional) remarks about ship status for next ROC")
         frame_notes.grid(row=1, column=2, sticky="nsew", padx=10, pady=10)
 
         notes_field = ScrolledText(frame_notes, height=5)
@@ -384,7 +384,7 @@ class RocGui:
         self.sog_entry.delete(0, tk.END)
         self.roc_controller.send_sog(sog)
 
-    def halt_vessel(self):
+    def halt_ship(self):
         print("\n!!! HALT BUTTON PRESSED !!!")
         self.roc_controller.send_sog(0)
 
@@ -429,15 +429,15 @@ class RocGui:
         self.imo_label.config(text=value)
 
     def update_remote_status(self, value):
-        self.vessel_status_label.config(text=value)
+        self.ship_status_label.config(text=value)
 
     def update_remote_time(self, value):
         ## Format into hh:mm:ss at one second precision
         time_fmt = str(datetime.timedelta(seconds=int(value)))
         self.time_until_label.config(text=time_fmt)
 
-    def update_vessel_name(self, value):
-        self.vessel_id_label.config(text=value)
+    def update_ship_name(self, value):
+        self.ship_id_label.config(text=value)
 
     # Update map position to given lat/long
     def update_map_position(self, lat_val, lon_val):

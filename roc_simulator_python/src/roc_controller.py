@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+'''
+This module contains the interface for sending control messages to a ship.
+'''
+
 import time
 import zenoh as Zenoh
 from zenoh import Config
@@ -8,17 +12,17 @@ from keelson.payloads.Primitives_pb2 import TimestampedFloat
 
 
 class ROCController:
-    def __init__(self, roc_id, vessel):
+    def __init__(self, roc_id, ship):
         self.roc_id = roc_id
-        self.vessel = vessel
+        self.ship = ship
 
         cfg = Config()
         self.zenoh = Zenoh.open(cfg)
 
-        self.pub_cog = self.zenoh.declare_publisher(f"{self.vessel}/control/roc/{self.roc_id}/COG")
-        self.pub_sog = self.zenoh.declare_publisher(f"{self.vessel}/control/roc/{self.roc_id}/SOG")
-        self.pub_relinquish = self.zenoh.declare_publisher(f"{self.vessel}/handover/relinquish")
-        self.pub_takeover = self.zenoh.declare_publisher(f"{self.vessel}/handover/takeover")
+        self.pub_cog = self.zenoh.declare_publisher(f"{self.ship}/control/roc/{self.roc_id}/COG")
+        self.pub_sog = self.zenoh.declare_publisher(f"{self.ship}/control/roc/{self.roc_id}/SOG")
+        self.pub_relinquish = self.zenoh.declare_publisher(f"{self.ship}/handover/relinquish")
+        self.pub_takeover = self.zenoh.declare_publisher(f"{self.ship}/handover/takeover")
 
     def send_cog(self, value):
         msg = TimestampedFloat()
