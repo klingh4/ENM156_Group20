@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 '''
 This module is basically just copy pasted from https://github.com/KJBlanch/ship_simulator_zenoh,
 with the addition of accepting extra arbitrary callback methods in the constructor.
@@ -8,6 +6,7 @@ The intent of the module is to act as a listener for Zenoh/keelson messages rece
 simulator and then react by triggering various handlers as appropriate.
 '''
 
+import sys
 import time
 import zenoh
 from datetime import datetime
@@ -198,3 +197,8 @@ class ShipTelemetryMonitor:
                 self.extra_callbacks['handle_handover_state'](self.handover_state)
         except:
             self.handover_state = None
+
+
+if __name__ == '__main__':
+    print("Please run roc_main.py instead.")
+    sys.exit(1)

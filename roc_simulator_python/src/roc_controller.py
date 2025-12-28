@@ -1,9 +1,8 @@
-#!/usr/bin/env python3
-
 '''
 This module contains the interface for sending control messages to a ship.
 '''
 
+import sys
 import time
 import zenoh as Zenoh
 from zenoh import Config
@@ -45,3 +44,7 @@ class ROCController:
     def send_takeover(self):
         self.pub_takeover.put(self.roc_id)
         print(f"[{self.roc_id}] Sent takeover")
+
+if __name__ == '__main__':
+    print("Please run roc_main.py instead.")
+    sys.exit(1)
