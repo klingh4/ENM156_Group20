@@ -12,17 +12,17 @@ from keelson.payloads.Primitives_pb2 import TimestampedFloat
 
 
 class ROCController:
-    def __init__(self, roc_id, ship):
-        self.roc_id = roc_id
-        self.ship = ship
+    def __init__(self, roc_id, ship_id):
+        self.roc_id = roc_id # For example "ROC_1"
+        self.ship_id = ship_id # For example "MASS_0"
 
         cfg = Config()
         self.zenoh = Zenoh.open(cfg)
 
-        self.pub_cog = self.zenoh.declare_publisher(f"{self.ship}/control/roc/{self.roc_id}/COG")
-        self.pub_sog = self.zenoh.declare_publisher(f"{self.ship}/control/roc/{self.roc_id}/SOG")
-        self.pub_relinquish = self.zenoh.declare_publisher(f"{self.ship}/handover/relinquish")
-        self.pub_takeover = self.zenoh.declare_publisher(f"{self.ship}/handover/takeover")
+        self.pub_cog = self.zenoh.declare_publisher(f"{self.ship_id}/control/roc/{self.roc_id}/COG")
+        self.pub_sog = self.zenoh.declare_publisher(f"{self.ship_id}/control/roc/{self.roc_id}/SOG")
+        self.pub_relinquish = self.zenoh.declare_publisher(f"{self.ship_id}/handover/relinquish")
+        self.pub_takeover = self.zenoh.declare_publisher(f"{self.ship_id}/handover/takeover")
 
     def send_cog(self, value):
         msg = TimestampedFloat()
