@@ -30,23 +30,32 @@ class RocGui:
         self.controlling_roc = "ROC_1"
         self.handover_state = HANDOVER_STATE_PENDING
 
+
+        # -------------------------------------------------------
+        # Root element setup
+        # -------------------------------------------------------
         root = tk.Tk()
         root.title("Vessel Readiness Panel – Interactive")
-        root.geometry("1800x980")
+        root.geometry("1800x980") # Static start value, but the window is resizable
 
+        # Set up uniform (they don't adapt their width) columns with a slightly smaller third one
         root.columnconfigure(0, weight=3, uniform="cols")
         root.columnconfigure(1, weight=3, uniform="cols")
         root.columnconfigure(2, weight=2, uniform="cols")
+
+        # Set up a tall first row and two smaller ones
         root.rowconfigure(0, weight=3)
         root.rowconfigure(1, weight=1)
+        # TODO: Third row actually empty for now, but looks nice as padding.
+        # Should probably add content or replace with actual padding.
         root.rowconfigure(2, weight=1)
 
         # Should exit main loop on closing window
         root.protocol("WM_DELETE_WINDOW", self.on_close)
+        self.root = root
 
-        ## First column
-        label_font = ("Arial", 10)
-        value_font = ("Arial", 10, "bold")
+        self.label_font = ("Arial", 10)
+        self.value_font = ("Arial", 10, "bold")
 
         # -------------------------------------------------------
         # VEHICLE MAP PANEL (live-map)
@@ -62,7 +71,6 @@ class RocGui:
         map_widget.set_marker(63.7045, 20.3530, text="ROC Umeå", marker_color_circle="yellow", marker_color_outside="cyan")
 
         self.marker = None
-        self.root = root
         self.frame_map = frame_map
         self.map_widget = map_widget
         self.map_widget_last_updated_time = 0
@@ -78,8 +86,8 @@ class RocGui:
         frame_roc.columnconfigure(1, weight=3, pad=5)
 
         # ROC identifier row
-        tk.Label(frame_roc, text="ROC identifier:", font=label_font, anchor="w").grid(row=0, column=0, sticky="w")
-        roc_id_label = tk.Label(frame_roc, text=self.roc_id, font=value_font, anchor="w")
+        tk.Label(frame_roc, text="ROC identifier:", font=self.label_font, anchor="w").grid(row=0, column=0, sticky="w")
+        roc_id_label = tk.Label(frame_roc, text=self.roc_id, font=self.value_font, anchor="w")
         roc_id_label.grid(row=0, column=1, sticky="w")
 
         # Separator
@@ -88,8 +96,8 @@ class RocGui:
         )
 
         # ROC location row
-        tk.Label(frame_roc, text="ROC location:", font=label_font, anchor="w").grid(row=2, column=0, sticky="w")
-        roc_location_label = tk.Label(frame_roc, text=self.roc_location, font=value_font, anchor="w")
+        tk.Label(frame_roc, text="ROC location:", font=self.label_font, anchor="w").grid(row=2, column=0, sticky="w")
+        roc_location_label = tk.Label(frame_roc, text=self.roc_location, font=self.value_font, anchor="w")
         roc_location_label.grid(row=2, column=1, sticky="w")
 
         ## Second column
@@ -103,16 +111,16 @@ class RocGui:
         frame_control.columnconfigure(2, weight=1)
 
         # TODO: rework after we're able to get has_priority from the status as well
-        tk.Label(frame_control, text="Controlling ROC:", anchor="w", font=label_font).grid(row=0, column=0, sticky="w")
-        roc_status_label = tk.Label(frame_control, text=self.controlling_roc, anchor="w", font=value_font)
+        tk.Label(frame_control, text="Controlling ROC:", anchor="w", font=self.label_font).grid(row=0, column=0, sticky="w")
+        roc_status_label = tk.Label(frame_control, text=self.controlling_roc, anchor="w", font=self.value_font)
         roc_status_label.grid(row=0, column=1, sticky="w")
 
         self.roc_status_label = roc_status_label
 
-        tk.Label(frame_control, text="Vessel status:", font=label_font, anchor="w").grid(
+        tk.Label(frame_control, text="Vessel status:", font=self.label_font, anchor="w").grid(
             row=1, column=0, sticky="w"
         )
-        ship_status_label = tk.Label(frame_control, text="N/A", font=value_font, anchor="w")
+        ship_status_label = tk.Label(frame_control, text="N/A", font=self.value_font, anchor="w")
         ship_status_label.grid(row=1, column=1, sticky="w")
 
         self.ship_status_label = ship_status_label
@@ -125,12 +133,12 @@ class RocGui:
         # -------------------------
         # Section: Speed over ground
         # -------------------------
-        tk.Label(frame_control, text="Speed over ground", font=value_font).grid(
+        tk.Label(frame_control, text="Speed over ground", font=self.value_font).grid(
             row=3, column=0, columnspan=3, sticky="w", pady=(0, 5)
         )
 
-        tk.Label(frame_control, text="Current SOG:", anchor="w", font=label_font).grid(row=4, column=0, sticky="w")
-        sog_label = tk.Label(frame_control, text="N/A", anchor="w", font=value_font)
+        tk.Label(frame_control, text="Current SOG:", anchor="w", font=self.label_font).grid(row=4, column=0, sticky="w")
+        sog_label = tk.Label(frame_control, text="N/A", anchor="w", font=self.value_font)
         sog_label.grid(row=4, column=1, sticky="w")
 
         sog_entry = tk.Entry(frame_control)
@@ -160,12 +168,12 @@ class RocGui:
         # -------------------------
         # Section: Course over ground
         # -------------------------
-        tk.Label(frame_control, text="Course over ground", font=value_font).grid(
+        tk.Label(frame_control, text="Course over ground", font=self.value_font).grid(
             row=8, column=0, columnspan=3, sticky="w", pady=(0, 5)
         )
 
-        tk.Label(frame_control, text="Current COG:", anchor="w", font=label_font).grid(row=9, column=0, sticky="w")
-        cog_label = tk.Label(frame_control, text="N/A", anchor="w", font=value_font)
+        tk.Label(frame_control, text="Current COG:", anchor="w", font=self.label_font).grid(row=9, column=0, sticky="w")
+        cog_label = tk.Label(frame_control, text="N/A", anchor="w", font=self.value_font)
         cog_label.grid(row=9, column=1, sticky="w")
 
         cog_entry = tk.Entry(frame_control)
@@ -186,18 +194,18 @@ class RocGui:
         # -------------------------
         # Section: ROC handover
         # -------------------------
-        tk.Label(frame_control, text="ROC handover", font=value_font).grid(
+        tk.Label(frame_control, text="ROC handover", font=self.value_font).grid(
             row=12, column=0, columnspan=3, sticky="w", pady=(0, 5)
         )
 
-        tk.Label(frame_control, text="Time until safety gate:", anchor="w", font=label_font).grid(row=13, column=0, sticky="w")
-        time_until_label = tk.Label(frame_control, text="N/A", anchor="w", font=value_font)
+        tk.Label(frame_control, text="Time until safety gate:", anchor="w", font=self.label_font).grid(row=13, column=0, sticky="w")
+        time_until_label = tk.Label(frame_control, text="N/A", anchor="w", font=self.value_font)
         time_until_label.grid(row=13, column=1, sticky="w")
 
         self.time_until_label = time_until_label
 
-        tk.Label(frame_control, text="Handover status:", anchor="w", font=label_font).grid(row=14, column=0, sticky="w")
-        handover_status_label = tk.Label(frame_control, text="N/A", anchor="w", font=value_font)
+        tk.Label(frame_control, text="Handover status:", anchor="w", font=self.label_font).grid(row=14, column=0, sticky="w")
+        handover_status_label = tk.Label(frame_control, text="N/A", anchor="w", font=self.value_font)
         handover_status_label.grid(row=14, column=1, sticky="w")
 
         self.handover_status_label = handover_status_label
@@ -228,28 +236,28 @@ class RocGui:
         frame_ship_info.columnconfigure(1, weight=2)
 
         # --- Vessel identifier ---
-        tk.Label(frame_ship_info, text="Vessel identifier:", font=label_font, anchor="w").grid(
+        tk.Label(frame_ship_info, text="Vessel identifier:", font=self.label_font, anchor="w").grid(
             row=0, column=0, sticky="w"
         )
-        ship_id_label = tk.Label(frame_ship_info, text="N/A", font=value_font, anchor="w")
+        ship_id_label = tk.Label(frame_ship_info, text="N/A", font=self.value_font, anchor="w")
         ship_id_label.grid(row=0, column=1, sticky="w")
 
         self.ship_id_label = ship_id_label
 
         # MMSI
-        tk.Label(frame_ship_info, text="MMSI:", font=label_font, anchor="w").grid(
+        tk.Label(frame_ship_info, text="MMSI:", font=self.label_font, anchor="w").grid(
             row=1, column=0, sticky="w"
         )
-        mmsi_label = tk.Label(frame_ship_info, text="N/A", font=value_font, anchor="w")
+        mmsi_label = tk.Label(frame_ship_info, text="N/A", font=self.value_font, anchor="w")
         mmsi_label.grid(row=1, column=1, sticky="w")
 
         self.mmsi_label = mmsi_label
 
         # IMO
-        tk.Label(frame_ship_info, text="IMO:", font=label_font, anchor="w").grid(
+        tk.Label(frame_ship_info, text="IMO:", font=self.label_font, anchor="w").grid(
             row=2, column=0, sticky="w"
         )
-        imo_label = tk.Label(frame_ship_info, text="N/A", font=value_font, anchor="w")
+        imo_label = tk.Label(frame_ship_info, text="N/A", font=self.value_font, anchor="w")
         imo_label.grid(row=2, column=1, sticky="w")
 
         self.imo_label = imo_label
@@ -260,19 +268,19 @@ class RocGui:
         )
 
         # Latitude
-        tk.Label(frame_ship_info, text="Current latitude:", font=label_font, anchor="w").grid(
+        tk.Label(frame_ship_info, text="Current latitude:", font=self.label_font, anchor="w").grid(
             row=4, column=0, sticky="w"
         )
-        lat_label = tk.Label(frame_ship_info, text="N/A", font=value_font, anchor="w")
+        lat_label = tk.Label(frame_ship_info, text="N/A", font=self.value_font, anchor="w")
         lat_label.grid(row=4, column=1, sticky="w")
 
         self.lat_label = lat_label
 
         # Longitude
-        tk.Label(frame_ship_info, text="Current longitude:", font=label_font, anchor="w").grid(
+        tk.Label(frame_ship_info, text="Current longitude:", font=self.label_font, anchor="w").grid(
             row=5, column=0, sticky="w"
         )
-        lon_label = tk.Label(frame_ship_info, text="N/A", font=value_font, anchor="w")
+        lon_label = tk.Label(frame_ship_info, text="N/A", font=self.value_font, anchor="w")
         lon_label.grid(row=5, column=1, sticky="w")
 
         self.lon_label = lon_label
