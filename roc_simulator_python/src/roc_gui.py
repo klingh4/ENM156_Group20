@@ -8,6 +8,7 @@ from tkinter.scrolledtext import ScrolledText
 from tkintermapview import TkinterMapView
 
 # Don't update map widget more often than this to avoid flickering
+# (time in seconds)
 MAP_WIDGET_UPDATE_CAP = 5
 
 # Some enums
