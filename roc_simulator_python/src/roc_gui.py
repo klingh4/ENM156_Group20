@@ -72,193 +72,35 @@ class RocGui:
         # Bottom left corner: Add ROC information (static for now, doesn't change after init).
         self.setup_roc_information_panel()
 
+
         # -------------------------------------------------------
         # Second column setup
         # -------------------------------------------------------
 
-        # --- Vessel Control Frame ---
-        frame_control = tk.LabelFrame(root, text="Vessel control", padx=10, pady=10)
-        frame_control.grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
+        # Top middle: Vessel controls
+        self.roc_status_label = None
+        self.ship_status_label = None
+        self.sog_button = None
+        self.sog_entry = None
+        self.sog_label = None
+        self.default_bgcol = None
+        self.default_abgcol = None
+        self.time_until_label = None
+        self.handover_status_label = None
+        self.verify_button = None
+        self.relinquish_button = None
+        self.takeover_button = None
+        self.halt_button = None
+        self.setup_vessel_control_panel()
 
-        # Internal grid configuration
-        frame_control.columnconfigure(0, weight=1)
-        frame_control.columnconfigure(1, weight=1)
-        frame_control.columnconfigure(2, weight=1)
+        # Bottom middle: Further vessel information
+        self.ship_id_label = None
+        self.mmsi_label = None
+        self.imo_label = None
+        self.lat_label = None
+        self.lon_label = None
+        self.setup_vessel_info_panel()
 
-        # TODO: rework after we're able to get has_priority from the status as well
-        tk.Label(frame_control, text="Controlling ROC:", anchor="w", font=self.label_font).grid(row=0, column=0, sticky="w")
-        roc_status_label = tk.Label(frame_control, text=self.controlling_roc, anchor="w", font=self.value_font)
-        roc_status_label.grid(row=0, column=1, sticky="w")
-
-        self.roc_status_label = roc_status_label
-
-        tk.Label(frame_control, text="Vessel status:", font=self.label_font, anchor="w").grid(
-            row=1, column=0, sticky="w"
-        )
-        ship_status_label = tk.Label(frame_control, text="N/A", font=self.value_font, anchor="w")
-        ship_status_label.grid(row=1, column=1, sticky="w")
-
-        self.ship_status_label = ship_status_label
-
-        # Separator
-        ttk.Separator(frame_control, orient="horizontal").grid(
-            row=2, column=0, columnspan=3, sticky="ew", pady=10
-        )
-
-        # -------------------------
-        # Section: Speed over ground
-        # -------------------------
-        tk.Label(frame_control, text="Speed over ground", font=self.value_font).grid(
-            row=3, column=0, columnspan=3, sticky="w", pady=(0, 5)
-        )
-
-        tk.Label(frame_control, text="Current SOG:", anchor="w", font=self.label_font).grid(row=4, column=0, sticky="w")
-        sog_label = tk.Label(frame_control, text="N/A", anchor="w", font=self.value_font)
-        sog_label.grid(row=4, column=1, sticky="w")
-
-        sog_entry = tk.Entry(frame_control)
-        sog_entry.grid(row=5, column=0, columnspan=2, sticky="ew", pady=2)
-        sog_button = tk.Button(frame_control, text="Set new SOG", command=self.send_sog)
-        sog_button.grid(row=5, column=2, sticky="ew", padx=(5, 0))
-
-        self.sog_button = sog_button
-        self.sog_entry = sog_entry
-        self.sog_label = sog_label
-
-        # Stash these values for later use!
-        self.default_bgcol = sog_button.cget("background")
-        self.default_abgcol = sog_button.cget("activebackground")
-
-        halt_button = tk.Button(frame_control, text="Halt ship", fg="red", command=self.halt_ship)
-        halt_button.grid(row=6, column=2, sticky="ew", pady=5)
-
-        self.halt_button = halt_button
-
-        # Separator
-        ttk.Separator(frame_control, orient="horizontal").grid(
-            row=7, column=0, columnspan=3, sticky="ew", pady=10
-        )
-
-
-        # -------------------------
-        # Section: Course over ground
-        # -------------------------
-        tk.Label(frame_control, text="Course over ground", font=self.value_font).grid(
-            row=8, column=0, columnspan=3, sticky="w", pady=(0, 5)
-        )
-
-        tk.Label(frame_control, text="Current COG:", anchor="w", font=self.label_font).grid(row=9, column=0, sticky="w")
-        cog_label = tk.Label(frame_control, text="N/A", anchor="w", font=self.value_font)
-        cog_label.grid(row=9, column=1, sticky="w")
-
-        cog_entry = tk.Entry(frame_control)
-        cog_entry.grid(row=10, column=0, columnspan=2, sticky="ew", pady=2)
-        cog_button = tk.Button(frame_control, text="Set new COG", command=self.send_cog)
-        cog_button.grid(row=10, column=2, sticky="ew", padx=(5, 0))
-
-        self.cog_button = cog_button
-        self.cog_entry = cog_entry
-        self.cog_label = cog_label
-
-        # Separator
-        ttk.Separator(frame_control, orient="horizontal").grid(
-            row=11, column=0, columnspan=3, sticky="ew", pady=10
-        )
-
-
-        # -------------------------
-        # Section: ROC handover
-        # -------------------------
-        tk.Label(frame_control, text="ROC handover", font=self.value_font).grid(
-            row=12, column=0, columnspan=3, sticky="w", pady=(0, 5)
-        )
-
-        tk.Label(frame_control, text="Time until safety gate:", anchor="w", font=self.label_font).grid(row=13, column=0, sticky="w")
-        time_until_label = tk.Label(frame_control, text="N/A", anchor="w", font=self.value_font)
-        time_until_label.grid(row=13, column=1, sticky="w")
-
-        self.time_until_label = time_until_label
-
-        tk.Label(frame_control, text="Handover status:", anchor="w", font=self.label_font).grid(row=14, column=0, sticky="w")
-        handover_status_label = tk.Label(frame_control, text="N/A", anchor="w", font=self.value_font)
-        handover_status_label.grid(row=14, column=1, sticky="w")
-
-        self.handover_status_label = handover_status_label
-
-        verify_button = tk.Button(frame_control, text="Verify and send checklist (not implemented yet)", state="disabled")
-        verify_button.grid(row=15, column=0, columnspan=3, sticky="ew", pady=2)
-
-        self.verify_button = verify_button
-
-        relinquish_button = tk.Button(frame_control, text="Relinquish control", command=self.on_relinquish, state="disabled")
-        relinquish_button.grid(row=16, column=0, columnspan=3, sticky="ew", pady=5)
-
-        self.relinquish_button = relinquish_button
-
-        takeover_button = tk.Button(frame_control, text="Request control", command=self.on_request, state="disabled")
-        takeover_button.grid(row=17, column=0, columnspan=3, sticky="ew", pady=5)
-
-        self.takeover_button = takeover_button
-
-        ## Lower second column
-
-        # --- Vessel Information Frame ---
-        frame_ship_info = tk.LabelFrame(root, text="Vessel information", padx=10, pady=10)
-        frame_ship_info.grid(row=1, column=1, sticky="nsew", padx=5, pady=5)
-
-        # Configure internal grid
-        frame_ship_info.columnconfigure(0, weight=1)
-        frame_ship_info.columnconfigure(1, weight=2)
-
-        # --- Vessel identifier ---
-        tk.Label(frame_ship_info, text="Vessel identifier:", font=self.label_font, anchor="w").grid(
-            row=0, column=0, sticky="w"
-        )
-        ship_id_label = tk.Label(frame_ship_info, text="N/A", font=self.value_font, anchor="w")
-        ship_id_label.grid(row=0, column=1, sticky="w")
-
-        self.ship_id_label = ship_id_label
-
-        # MMSI
-        tk.Label(frame_ship_info, text="MMSI:", font=self.label_font, anchor="w").grid(
-            row=1, column=0, sticky="w"
-        )
-        mmsi_label = tk.Label(frame_ship_info, text="N/A", font=self.value_font, anchor="w")
-        mmsi_label.grid(row=1, column=1, sticky="w")
-
-        self.mmsi_label = mmsi_label
-
-        # IMO
-        tk.Label(frame_ship_info, text="IMO:", font=self.label_font, anchor="w").grid(
-            row=2, column=0, sticky="w"
-        )
-        imo_label = tk.Label(frame_ship_info, text="N/A", font=self.value_font, anchor="w")
-        imo_label.grid(row=2, column=1, sticky="w")
-
-        self.imo_label = imo_label
-
-        # Separator
-        ttk.Separator(frame_ship_info, orient="horizontal").grid(
-            row=3, column=0, sticky="ew", pady=10
-        )
-
-        # Latitude
-        tk.Label(frame_ship_info, text="Current latitude:", font=self.label_font, anchor="w").grid(
-            row=4, column=0, sticky="w"
-        )
-        lat_label = tk.Label(frame_ship_info, text="N/A", font=self.value_font, anchor="w")
-        lat_label.grid(row=4, column=1, sticky="w")
-
-        self.lat_label = lat_label
-
-        # Longitude
-        tk.Label(frame_ship_info, text="Current longitude:", font=self.label_font, anchor="w").grid(
-            row=5, column=0, sticky="w"
-        )
-        lon_label = tk.Label(frame_ship_info, text="N/A", font=self.value_font, anchor="w")
-        lon_label.grid(row=5, column=1, sticky="w")
-
-        self.lon_label = lon_label
 
         ## Third column
 
@@ -316,7 +158,9 @@ class RocGui:
         print(f"{self.__class__.__name__} initialized.")
 
     def setup_vehicle_map_panel(self):
-        # Interactive live map showing vessel and ROC location.
+        '''
+        Set up interactive live map showing vessel and ROC location.
+        '''
         frame_map = tk.LabelFrame(self.root, text="Vessel position map")
         frame_map.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
 
@@ -330,7 +174,9 @@ class RocGui:
         self.map_widget = map_widget
 
     def setup_roc_information_panel(self):
-        # Static ROC information.
+        '''
+        Set up panel with static ROC information.
+        '''
         frame_roc = tk.LabelFrame(self.root, text="ROC information", padx=10, pady=10)
         frame_roc.grid(row=1, column=0, sticky="nsew", padx=5, pady=5)
 
@@ -352,6 +198,192 @@ class RocGui:
         tk.Label(frame_roc, text="ROC location:", font=self.label_font, anchor="w").grid(row=2, column=0, sticky="w")
         roc_location_label = tk.Label(frame_roc, text=self.roc_location, font=self.value_font, anchor="w")
         roc_location_label.grid(row=2, column=1, sticky="w")
+
+    def setup_vessel_control_panel(self):
+        '''
+        Set up vessel COG/SOG and handover controls.
+        '''
+        frame_control = tk.LabelFrame(self.root, text="Vessel control", padx=10, pady=10)
+        frame_control.grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
+
+        # Internal grid configuration
+        frame_control.columnconfigure(0, weight=1)
+        frame_control.columnconfigure(1, weight=1)
+        frame_control.columnconfigure(2, weight=1)
+
+        # TODO: rework after we're able to get has_priority from the status as well
+        tk.Label(frame_control, text="Controlling ROC:", anchor="w", font=self.label_font).grid(row=0, column=0, sticky="w")
+        roc_status_label = tk.Label(frame_control, text=self.controlling_roc, anchor="w", font=self.value_font)
+        roc_status_label.grid(row=0, column=1, sticky="w")
+
+        self.roc_status_label = roc_status_label
+
+        tk.Label(frame_control, text="Vessel status:", font=self.label_font, anchor="w").grid(
+            row=1, column=0, sticky="w"
+        )
+        ship_status_label = tk.Label(frame_control, text="N/A", font=self.value_font, anchor="w")
+        ship_status_label.grid(row=1, column=1, sticky="w")
+
+        self.ship_status_label = ship_status_label
+
+        # Separator
+        ttk.Separator(frame_control, orient="horizontal").grid(
+            row=2, column=0, columnspan=3, sticky="ew", pady=10
+        )
+
+        # -------------------------
+        # Section: Speed over ground
+        # -------------------------
+        tk.Label(frame_control, text="Speed over ground", font=self.value_font).grid(
+            row=3, column=0, columnspan=3, sticky="w", pady=(0, 5)
+        )
+
+        tk.Label(frame_control, text="Current SOG:", anchor="w", font=self.label_font).grid(row=4, column=0, sticky="w")
+        sog_label = tk.Label(frame_control, text="N/A", anchor="w", font=self.value_font)
+        sog_label.grid(row=4, column=1, sticky="w")
+
+        sog_entry = tk.Entry(frame_control)
+        sog_entry.grid(row=5, column=0, columnspan=2, sticky="ew", pady=2)
+        sog_button = tk.Button(frame_control, text="Set new SOG", command=self.send_sog)
+        sog_button.grid(row=5, column=2, sticky="ew", padx=(5, 0))
+
+        self.sog_button = sog_button
+        self.sog_entry = sog_entry
+        self.sog_label = sog_label
+
+        # Stash these values for later use (so we can flash the button for the user)
+        self.default_bgcol = sog_button.cget("background")
+        self.default_abgcol = sog_button.cget("activebackground")
+
+        halt_button = tk.Button(frame_control, text="Halt ship", fg="red", command=self.halt_ship)
+        halt_button.grid(row=6, column=2, sticky="ew", pady=5)
+
+        self.halt_button = halt_button
+
+        # Separator
+        ttk.Separator(frame_control, orient="horizontal").grid(
+            row=7, column=0, columnspan=3, sticky="ew", pady=10
+        )
+
+        # -------------------------
+        # Section: Course over ground
+        # -------------------------
+        tk.Label(frame_control, text="Course over ground", font=self.value_font).grid(
+            row=8, column=0, columnspan=3, sticky="w", pady=(0, 5)
+        )
+
+        tk.Label(frame_control, text="Current COG:", anchor="w", font=self.label_font).grid(row=9, column=0, sticky="w")
+        cog_label = tk.Label(frame_control, text="N/A", anchor="w", font=self.value_font)
+        cog_label.grid(row=9, column=1, sticky="w")
+
+        cog_entry = tk.Entry(frame_control)
+        cog_entry.grid(row=10, column=0, columnspan=2, sticky="ew", pady=2)
+        cog_button = tk.Button(frame_control, text="Set new COG", command=self.send_cog)
+        cog_button.grid(row=10, column=2, sticky="ew", padx=(5, 0))
+
+        self.cog_button = cog_button
+        self.cog_entry = cog_entry
+        self.cog_label = cog_label
+
+        # Separator
+        ttk.Separator(frame_control, orient="horizontal").grid(
+            row=11, column=0, columnspan=3, sticky="ew", pady=10
+        )
+
+        # -------------------------
+        # Section: ROC handover
+        # -------------------------
+        tk.Label(frame_control, text="ROC handover", font=self.value_font).grid(
+            row=12, column=0, columnspan=3, sticky="w", pady=(0, 5)
+        )
+
+        tk.Label(frame_control, text="Time until safety gate:", anchor="w", font=self.label_font).grid(row=13, column=0, sticky="w")
+        time_until_label = tk.Label(frame_control, text="N/A", anchor="w", font=self.value_font)
+        time_until_label.grid(row=13, column=1, sticky="w")
+
+        self.time_until_label = time_until_label
+
+        tk.Label(frame_control, text="Handover status:", anchor="w", font=self.label_font).grid(row=14, column=0, sticky="w")
+        handover_status_label = tk.Label(frame_control, text="N/A", anchor="w", font=self.value_font)
+        handover_status_label.grid(row=14, column=1, sticky="w")
+
+        self.handover_status_label = handover_status_label
+
+        verify_button = tk.Button(frame_control, text="Verify and send checklist (not implemented yet)", state="disabled")
+        verify_button.grid(row=15, column=0, columnspan=3, sticky="ew", pady=2)
+
+        self.verify_button = verify_button
+
+        relinquish_button = tk.Button(frame_control, text="Relinquish control", command=self.on_relinquish, state="disabled")
+        relinquish_button.grid(row=16, column=0, columnspan=3, sticky="ew", pady=5)
+
+        self.relinquish_button = relinquish_button
+
+        takeover_button = tk.Button(frame_control, text="Request control", command=self.on_request, state="disabled")
+        takeover_button.grid(row=17, column=0, columnspan=3, sticky="ew", pady=5)
+
+        self.takeover_button = takeover_button
+
+    def setup_vessel_info_panel(self):
+        '''
+        Set up panel with additional vessel information.
+        '''
+        frame_ship_info = tk.LabelFrame(self.root, text="Vessel information", padx=10, pady=10)
+        frame_ship_info.grid(row=1, column=1, sticky="nsew", padx=5, pady=5)
+
+        # Configure internal grid
+        frame_ship_info.columnconfigure(0, weight=1)
+        frame_ship_info.columnconfigure(1, weight=2)
+
+        # --- Vessel identifier ---
+        tk.Label(frame_ship_info, text="Vessel identifier:", font=self.label_font, anchor="w").grid(
+            row=0, column=0, sticky="w"
+        )
+        ship_id_label = tk.Label(frame_ship_info, text="N/A", font=self.value_font, anchor="w")
+        ship_id_label.grid(row=0, column=1, sticky="w")
+
+        self.ship_id_label = ship_id_label
+
+        # MMSI
+        tk.Label(frame_ship_info, text="MMSI:", font=self.label_font, anchor="w").grid(
+            row=1, column=0, sticky="w"
+        )
+        mmsi_label = tk.Label(frame_ship_info, text="N/A", font=self.value_font, anchor="w")
+        mmsi_label.grid(row=1, column=1, sticky="w")
+
+        self.mmsi_label = mmsi_label
+
+        # IMO
+        tk.Label(frame_ship_info, text="IMO:", font=self.label_font, anchor="w").grid(
+            row=2, column=0, sticky="w"
+        )
+        imo_label = tk.Label(frame_ship_info, text="N/A", font=self.value_font, anchor="w")
+        imo_label.grid(row=2, column=1, sticky="w")
+
+        self.imo_label = imo_label
+
+        # Separator
+        ttk.Separator(frame_ship_info, orient="horizontal").grid(
+            row=3, column=0, sticky="ew", pady=10
+        )
+
+        # Latitude
+        tk.Label(frame_ship_info, text="Current latitude:", font=self.label_font, anchor="w").grid(
+            row=4, column=0, sticky="w"
+        )
+        lat_label = tk.Label(frame_ship_info, text="N/A", font=self.value_font, anchor="w")
+        lat_label.grid(row=4, column=1, sticky="w")
+
+        self.lat_label = lat_label
+
+        # Longitude
+        tk.Label(frame_ship_info, text="Current longitude:", font=self.label_font, anchor="w").grid(
+            row=5, column=0, sticky="w"
+        )
+        lon_label = tk.Label(frame_ship_info, text="N/A", font=self.value_font, anchor="w")
+        lon_label.grid(row=5, column=1, sticky="w")
+
+        self.lon_label = lon_label
 
     def mainloop(self):
         self.root.mainloop()
