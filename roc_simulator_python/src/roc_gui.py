@@ -34,6 +34,7 @@ class RocGui:
         # -------------------------------------------------------
         # Root element setup
         # -------------------------------------------------------
+
         root = tk.Tk()
         root.title("Vessel Readiness Panel – Interactive")
         root.geometry("1800x980") # Static start value, but the window is resizable
@@ -57,50 +58,24 @@ class RocGui:
         self.label_font = ("Arial", 10)
         self.value_font = ("Arial", 10, "bold")
 
-        # -------------------------------------------------------
-        # VEHICLE MAP PANEL (live-map)
-        # -------------------------------------------------------
-        frame_map = tk.LabelFrame(root, text="Vessel position map")
-        frame_map.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
 
-        map_widget = TkinterMapView(frame_map, width=600, height=500, corner_radius=0)
-        map_widget.set_position(59.3293, 18.0686)  # Stockholm example
-        map_widget.set_zoom(4)
-        map_widget.pack(expand=True, fill="both")
-        map_widget.set_marker(63.0888, 21.5617, text="ROC Vaasa", marker_color_circle="white", marker_color_outside="cyan")
-        map_widget.set_marker(63.7045, 20.3530, text="ROC Umeå", marker_color_circle="yellow", marker_color_outside="cyan")
+        # -------------------------------------------------------
+        # First column setup
+        # -------------------------------------------------------
 
+        # Top left corner: Add pretty live map.
         self.marker = None
-        self.frame_map = frame_map
-        self.map_widget = map_widget
+        self.map_widget = None
         self.map_widget_last_updated_time = 0
+        self.setup_vehicle_map_panel()
+
+        # Bottom left corner: Add ROC information (static for now, doesn't change after init).
+        self.setup_roc_information_panel()
 
         # -------------------------------------------------------
-        # ROC info
+        # Second column setup
         # -------------------------------------------------------
-        frame_roc = tk.LabelFrame(root, text="ROC information", padx=10, pady=10)
-        frame_roc.grid(row=1, column=0, sticky="nsew", padx=5, pady=5)
 
-        # Configure grid inside the frame
-        frame_roc.columnconfigure(0, weight=1, pad=5)
-        frame_roc.columnconfigure(1, weight=3, pad=5)
-
-        # ROC identifier row
-        tk.Label(frame_roc, text="ROC identifier:", font=self.label_font, anchor="w").grid(row=0, column=0, sticky="w")
-        roc_id_label = tk.Label(frame_roc, text=self.roc_id, font=self.value_font, anchor="w")
-        roc_id_label.grid(row=0, column=1, sticky="w")
-
-        # Separator
-        ttk.Separator(frame_roc, orient="horizontal").grid(
-            row=1, column=0, sticky="ew", pady=10
-        )
-
-        # ROC location row
-        tk.Label(frame_roc, text="ROC location:", font=self.label_font, anchor="w").grid(row=2, column=0, sticky="w")
-        roc_location_label = tk.Label(frame_roc, text=self.roc_location, font=self.value_font, anchor="w")
-        roc_location_label.grid(row=2, column=1, sticky="w")
-
-        ## Second column
         # --- Vessel Control Frame ---
         frame_control = tk.LabelFrame(root, text="Vessel control", padx=10, pady=10)
         frame_control.grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
@@ -340,6 +315,44 @@ class RocGui:
 
         print(f"{self.__class__.__name__} initialized.")
 
+    def setup_vehicle_map_panel(self):
+        # Interactive live map showing vessel and ROC location.
+        frame_map = tk.LabelFrame(self.root, text="Vessel position map")
+        frame_map.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
+
+        map_widget = TkinterMapView(frame_map, width=600, height=500, corner_radius=0)
+        map_widget.set_position(59.3293, 18.0686)  # Stockholm example
+        map_widget.set_zoom(4)
+        map_widget.pack(expand=True, fill="both")
+        map_widget.set_marker(63.0888, 21.5617, text="ROC Vaasa", marker_color_circle="white", marker_color_outside="cyan")
+        map_widget.set_marker(63.7045, 20.3530, text="ROC Umeå", marker_color_circle="yellow", marker_color_outside="cyan")
+
+        self.map_widget = map_widget
+
+    def setup_roc_information_panel(self):
+        # Static ROC information.
+        frame_roc = tk.LabelFrame(self.root, text="ROC information", padx=10, pady=10)
+        frame_roc.grid(row=1, column=0, sticky="nsew", padx=5, pady=5)
+
+        # Configure grid inside the frame
+        frame_roc.columnconfigure(0, weight=1, pad=5)
+        frame_roc.columnconfigure(1, weight=3, pad=5)
+
+        # ROC identifier row
+        tk.Label(frame_roc, text="ROC identifier:", font=self.label_font, anchor="w").grid(row=0, column=0, sticky="w")
+        roc_id_label = tk.Label(frame_roc, text=self.roc_id, font=self.value_font, anchor="w")
+        roc_id_label.grid(row=0, column=1, sticky="w")
+
+        # Separator
+        ttk.Separator(frame_roc, orient="horizontal").grid(
+            row=1, column=0, sticky="ew", pady=10
+        )
+
+        # ROC location row
+        tk.Label(frame_roc, text="ROC location:", font=self.label_font, anchor="w").grid(row=2, column=0, sticky="w")
+        roc_location_label = tk.Label(frame_roc, text=self.roc_location, font=self.value_font, anchor="w")
+        roc_location_label.grid(row=2, column=1, sticky="w")
+
     def mainloop(self):
         self.root.mainloop()
 
@@ -463,6 +476,7 @@ class RocGui:
                 self.map_widget_last_updated_time = time.time()
         except ValueError:
             pass
+
 
 if __name__ == '__main__':
     print("Please run roc_main.py instead.")
