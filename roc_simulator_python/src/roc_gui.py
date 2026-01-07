@@ -16,9 +16,7 @@ HANDOVER_STATE_PENDING = 0
 HANDOVER_STATE_READY = 1
 HANDOVER_STATE_COMPLETED = 2
 
-# -------------------------------------------------------
-# GUI start
-# -------------------------------------------------------
+
 class RocGui:
     def __init__(self, roc_controller):
         self.roc_controller = roc_controller
@@ -102,53 +100,25 @@ class RocGui:
         self.setup_vessel_info_panel()
 
 
-        ## Third column
+        # -------------------------------------------------------
+        # Third column setup
+        # -------------------------------------------------------
+
+        # Top right: Interactive checklist
+        # TODO: This is not connected to any real functionality at the moment.
+        # But at least you can click the boxes, that's always fun!
+        self.checklist_variables = None
+        self.setup_interactive_checklist_panel()
+
+        # Bottom right: Arbitrary notes editor
+        # TODO: Not connected to any real functionality yet either.
+        self.notes_field = None
+        self.setup_notes_panel()
+
 
         # -------------------------------------------------------
-        # INTERACTIVE CHECKLIST
+        # Finalize setup
         # -------------------------------------------------------
-        frame_checklist = tk.LabelFrame(root, text="Bridge Checklist")
-        frame_checklist.grid(row=0, column=2, sticky="nsew", padx=10, pady=10)
-
-        checklist_items = [
-            "Position checked",
-            "Course & speed verified",
-            "Traffic conditions safe",
-        ]
-
-        scroll_canvas = tk.Canvas(frame_checklist)
-        scroll_canvas.pack(side="left", fill="both", expand=True)
-
-        scrollbar = tk.Scrollbar(frame_checklist, orient="vertical",
-                                 command=scroll_canvas.yview)
-        scrollbar.pack(side="right", fill="y")
-        scroll_canvas.configure(yscrollcommand=scrollbar.set)
-
-        inner_frame = tk.Frame(scroll_canvas)
-        scroll_canvas.create_window((0, 0), window=inner_frame, anchor="nw")
-
-        check_vars = []
-
-        for item in checklist_items:
-            var = tk.BooleanVar()
-            chk = tk.Checkbutton(inner_frame, text=item, variable=var, anchor="w")
-            chk.pack(fill="x", pady=2)
-            check_vars.append((item, var))
-
-        self.check_vars = check_vars
-
-        inner_frame.update_idletasks()
-        scroll_canvas.config(scrollregion=scroll_canvas.bbox("all"))
-
-        # -------------------------------------------------------
-        # NOTES EDITOR
-        # -------------------------------------------------------
-        frame_notes = tk.LabelFrame(root, text="(Optional) remarks about ship status for next ROC")
-        frame_notes.grid(row=1, column=2, sticky="nsew", padx=10, pady=10)
-
-        notes_field = ScrolledText(frame_notes, height=5)
-        notes_field.pack(expand=True, fill="both")
-
         self.conditionally_enable_elements()
 
         # Bit of an ugly hack - but if we get handed this we can properly close
@@ -384,6 +354,56 @@ class RocGui:
         lon_label.grid(row=5, column=1, sticky="w")
 
         self.lon_label = lon_label
+
+    def setup_interactive_checklist_panel(self):
+        '''
+        Set up interactive checklist for various items that need to be manually checked
+        before the handover can be completed.
+        '''
+        frame_checklist = tk.LabelFrame(self.root, text="Bridge Checklist")
+        frame_checklist.grid(row=0, column=2, sticky="nsew", padx=10, pady=10)
+
+        checklist_items = [
+            "Position checked",
+            "Course & speed verified",
+            "Traffic conditions safe",
+        ]
+
+        scroll_canvas = tk.Canvas(frame_checklist)
+        scroll_canvas.pack(side="left", fill="both", expand=True)
+
+        scrollbar = tk.Scrollbar(frame_checklist, orient="vertical",
+                                 command=scroll_canvas.yview)
+        scrollbar.pack(side="right", fill="y")
+        scroll_canvas.configure(yscrollcommand=scrollbar.set)
+
+        inner_frame = tk.Frame(scroll_canvas)
+        scroll_canvas.create_window((0, 0), window=inner_frame, anchor="nw")
+
+        check_vars = []
+
+        for item in checklist_items:
+            var = tk.BooleanVar()
+            chk = tk.Checkbutton(inner_frame, text=item, variable=var, anchor="w")
+            chk.pack(fill="x", pady=2)
+            check_vars.append((item, var))
+
+        self.checklist_variables = check_vars
+
+        inner_frame.update_idletasks()
+        scroll_canvas.config(scrollregion=scroll_canvas.bbox("all"))
+
+    def setup_notes_panel(self):
+        '''
+        Set up field where the ROC operator may add arbitrary remarks about the vessel.
+        '''
+        frame_notes = tk.LabelFrame(self.root, text="(Optional) remarks about ship status for next ROC")
+        frame_notes.grid(row=1, column=2, sticky="nsew", padx=10, pady=10)
+
+        notes_field = ScrolledText(frame_notes, height=5)
+        notes_field.pack(expand=True, fill="both")
+
+        self.notes_field = notes_field
 
     def mainloop(self):
         self.root.mainloop()
