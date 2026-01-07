@@ -24,7 +24,7 @@ class RocGui:
         self.roc_id = roc_controller.roc_id
         self.roc_id_num = int(self.roc_id[-1])
         self.roc_location = {"ROC_1": "Vaasa", "ROC_2": "Umeå"}[self.roc_id]
-        self.ship = roc_controller.ship
+        self.ship_id = roc_controller.ship_id
         # Hack !! TODO: listen to ship when it supports this
         self.controlling_roc = "ROC_1"
         self.handover_state = HANDOVER_STATE_PENDING
