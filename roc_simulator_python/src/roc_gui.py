@@ -22,9 +22,10 @@ class RocGui:
         self.roc_controller = roc_controller
         self.roc_id = roc_controller.roc_id
         self.roc_id_num = int(self.roc_id[-1])
+        # TODO: Hard coded for now.
         self.roc_location = {"ROC_1": "Vaasa", "ROC_2": "Umeå"}[self.roc_id]
         self.ship_id = roc_controller.ship_id
-        # Hack !! TODO: listen to ship when it supports this
+        # Hack!! TODO: have the ship tell us its controlling ROC instead.
         self.controlling_roc = "ROC_1"
         self.handover_state = HANDOVER_STATE_PENDING
 
@@ -127,6 +128,10 @@ class RocGui:
 
         print(f"{self.__class__.__name__} initialized.")
 
+
+    # -------------------------------------------------------
+    # Setup methods
+    # -------------------------------------------------------
     def setup_vehicle_map_panel(self):
         '''
         Set up interactive live map showing vessel and ROC location.
@@ -405,10 +410,93 @@ class RocGui:
 
         self.notes_field = notes_field
 
-    def mainloop(self):
-        self.root.mainloop()
+
+    # -------------------------------------------------------
+    # Methods called from GUI actions
+    # -------------------------------------------------------
+    def on_close(self):
+        '''
+        Called upon window close, all cleanup needs to happen here.
+        '''
+        # Close zenoh session properly at exit
+        if self.monitor:
+            self.monitor.session.close()
+
+        self.root.quit()
+        self.root.destroy()
+
+    def on_relinquish(self):
+        '''
+        Send relinquish control zenoh message and display a helpful GUI message.
+        '''
+        self.handover_status_label.configure(text="Awaiting confirmation...", fg="blue")
+        self.roc_controller.send_relinquish()
+
+    def on_request(self):
+        '''
+        Send request control zenoh message and display a helpful GUI message.
+        '''
+        self.handover_status_label.configure(text="Awaiting confirmation...", fg="blue")
+        self.roc_controller.send_takeover()
+
+    def send_cog(self):
+        '''
+        Send COG given in GUI to ship.
+        '''
+        # TODO: validate data, don't accept empty or nonnumeric!
+        cog = self.cog_entry.get()
+        self.cog_entry.delete(0, tk.END)
+        self.roc_controller.send_cog(cog)
+
+    def send_sog(self):
+        '''
+        Send SOG given in GUI to ship.
+        '''
+        # TODO: validate data, don't accept empty or nonnumeric!
+        sog = self.sog_entry.get()
+        self.sog_entry.delete(0, tk.END)
+        self.roc_controller.send_sog(sog)
+
+    def halt_ship(self):
+        '''
+        Immediately halt ship.
+        '''
+        print("\n!!! HALT BUTTON PRESSED !!!")
+        self.roc_controller.send_sog(0)
+
+    def print_checklist_status(self):
+        '''
+        Do something with the interactive checklist.
+        Currently neither connected to the checklist, nor very useful as such.
+        '''
+        # TODO: Connect to checklist.
+        print("\n--- CHECKLIST STATUS ---")
+        for item, var in self.checklist_variables:
+            print(f"{item}: {'✓' if var.get() else '✗'}")
+        print("-------------------------\n")
+
+    def update_map_position(self, lat_val, lon_val):
+        '''
+        Update map position to given lat/long value.
+        '''
+        try:
+            self.lat_label.config(text=f"{lat_val:.6f}")
+            self.lon_label.config(text=f"{lon_val:.6f}")
+
+            # To counter flickering, set a limit to map widget update frequency
+            if time.time() > self.map_widget_last_updated_time + MAP_WIDGET_UPDATE_CAP:
+                if self.marker:
+                    self.marker.delete()
+                self.marker = self.map_widget.set_marker(lat_val, lon_val, text="MASS_0")
+                self.map_widget.set_position(lat_val, lon_val)
+                self.map_widget_last_updated_time = time.time()
+        except ValueError:
+            pass
 
     def conditionally_enable_elements(self):
+        '''
+        Enable or disable certain elements, depending on handover status and whether we're the controling ROC.
+        '''
         # Basic SOG/COG/halt
         for element in [
             self.sog_button, self.sog_entry, self.cog_button, self.cog_entry, self.halt_button
@@ -430,105 +518,90 @@ class RocGui:
                 self.relinquish_button.config(state="disabled")
                 self.takeover_button.config(state="normal", bg="green", activebackground="lightgreen")
 
-    def on_close(self):
-        # Close zenoh session properly at exit
-        if self.monitor:
-            self.monitor.session.close()
 
-        self.root.quit()
-        self.root.destroy()
-
-    def on_relinquish(self):
-        self.handover_status_label.configure(text="Awaiting confirmation...", fg="blue")
-        self.roc_controller.send_relinquish()
-
-    def on_request(self):
-        self.handover_status_label.configure(text="Awaiting confirmation...", fg="blue")
-        self.roc_controller.send_takeover()
-
-    def send_cog(self):
-        # TODO: validate data
-        cog = self.cog_entry.get()
-        self.cog_entry.delete(0, tk.END)
-        self.roc_controller.send_cog(cog)
-
-    def send_sog(self):
-        # TODO: validate data
-        sog = self.sog_entry.get()
-        self.sog_entry.delete(0, tk.END)
-        self.roc_controller.send_sog(sog)
-
-    def halt_ship(self):
-        print("\n!!! HALT BUTTON PRESSED !!!")
-        self.roc_controller.send_sog(0)
-
-    def print_check_status(self):
-        print("\n--- CHECKLIST STATUS ---")
-        for item, var in self.check_vars:
-            print(f"{item}: {'✓' if var.get() else '✗'}")
-        print("-------------------------\n")
-
-    # Setup GUI callbacks for ship updates
+    # -------------------------------------------------------
+    # Callbacks for ship updates
+    # -------------------------------------------------------
     def on_handover_request(self, value):
+        '''
+        React to handover ready message from ship.
+        '''
         self.handover_state = HANDOVER_STATE_READY
         self.handover_status_label.config(text="Ready for handover", fg="green")
         self.conditionally_enable_elements()
 
     def on_handover_state(self, value):
+        '''
+        React to handover completed message from ship.
+        '''
         self.handover_state = HANDOVER_STATE_COMPLETED
         self.handover_status_label.config(text="Handover completed.", fg="green")
         self.time_until_label.config(text="N/A")
 
-        # AWFUL HACK (but quick)
+        # TODO: AWFUL HACK (but quick)
         priority_roc = "ROC_2" if "new_priority=ROC_2" in value else "ROC_1"
         self.controlling_roc = priority_roc
         self.roc_status_label.config(text=priority_roc)
         self.conditionally_enable_elements()
 
     def update_cog_out(self, value):
+        '''
+        React to cog message from ship.
+        '''
         self.cog_label.config(text=f"{value:.2f}")
 
     def update_sog_out(self, value):
+        '''
+        React to sog message from ship.
+        '''
         self.sog_label.config(text=f"{value:.2f}")
 
     def update_roc_status(self, value):
+        '''
+        React to roc status message from ship.
+        '''
         # TODO: fix when we can get has_priority as well
         # self.roc_status_label.config(text=value)
         pass
 
     def update_mmsi(self, value):
+        '''
+        React to MMSI message from ship.
+        '''
         self.mmsi_label.config(text=value)
 
     def update_imo(self, value):
+        '''
+        React to IMO message from ship.
+        '''
         self.imo_label.config(text=value)
 
     def update_remote_status(self, value):
+        '''
+        React to remote status message from ship.
+        '''
         self.ship_status_label.config(text=value)
 
     def update_remote_time(self, value):
+        '''
+        React to remote time message from ship.
+        '''
         ## Format into hh:mm:ss at one second precision
         time_fmt = str(datetime.timedelta(seconds=int(value)))
         self.time_until_label.config(text=time_fmt)
 
     def update_ship_name(self, value):
+        '''
+        React to ship name message from ship.
+        '''
         self.ship_id_label.config(text=value)
 
-    # Update map position to given lat/long
-    def update_map_position(self, lat_val, lon_val):
-        try:
-            self.lat_label.config(text=f"{lat_val:.6f}")
-            self.lon_label.config(text=f"{lon_val:.6f}")
 
-            # To counter flickering, set a limit to map widget update frequency
-            if time.time() > self.map_widget_last_updated_time + MAP_WIDGET_UPDATE_CAP:
-                if self.marker:
-                    self.marker.delete()
-                self.marker = self.map_widget.set_marker(lat_val, lon_val, text="MASS_0")
-                self.map_widget.set_position(lat_val, lon_val)
-                self.map_widget_last_updated_time = time.time()
-        except ValueError:
-            pass
-
+    # -------------------------------------------------------
+    # Main loop entry point
+    # -------------------------------------------------------
+    def mainloop(self):
+        self.root.mainloop()
 
 if __name__ == '__main__':
     print("Please run roc_main.py instead.")
